@@ -3,8 +3,6 @@
 template <typename T>
 class List;
 
-template <typename T>
-class Iterator;
 
 template <typename T>
 struct Node {
@@ -18,7 +16,7 @@ struct Node {
 	}
 };
 
-template <typename T>
+template <typename T, typename Ptr=T*, typename Ref=T& >
 class Iterator {
 	friend List<T>;
 	Node<T>* current;
@@ -26,23 +24,25 @@ public:
 	Iterator(Node<T>* node) {
 		current = node;
 	}
-	T& operator*() {
+	Ref operator*() {
 		return current->data;
 	}
-	Iterator& operator++(int) {
-		Iterator& temp = *this;
+	Iterator operator++(int) {
+		Iterator temp = *this;
 		current = current->next;
 		return temp;
 	}
 	Iterator& operator++() {
-		Iterator& temp = *this;
 		current = current->next;
-		return temp;
+		return *this;
 	}
-	bool operator != (const Iterator& other) {
+	bool operator != (const Iterator& other) const {
 		return current != other.current;
 	}
-	T* operator->() {
+	bool operator == (const Iterator& other) const {
+		return current == other.current;
+	}
+	Ptr operator->() {
 		return &(current->data);
 	}
 };
@@ -56,7 +56,7 @@ class List {
 	
 public:
 	typedef Iterator<T> iterator;
-	typedef Iterator<T> const_iterator;
+	typedef Iterator<T, const T*, const T&> const_iterator;
 	List() {}
 	void push_back(T data) {
 		Node<T>* newNode = new Node<T>(data);
@@ -109,16 +109,16 @@ public:
 		delete node;
 		size--;
 	}
-	iterator begin() {
-		return Iterator<T>(first);
+	iterator begin() const {
+		return iterator(first);
 	}
-	iterator end() {
-		return Iterator<T>(nullptr);
+	iterator end() const {
+		return iterator(nullptr);
 	}
-	const_iterator begin() const {
+	const_iterator cbegin() const {
 		return const_iterator(first);
 	}
-	const_iterator end() const {
+	const_iterator cend() const {
 		return const_iterator(nullptr);
 	}
 	void sort() {

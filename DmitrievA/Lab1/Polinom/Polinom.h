@@ -20,14 +20,13 @@ class Monome;
 class Polinom
 {
 	List<Monome> monomes = List<Monome>();
-
 public:
 	ParseMode parseMode = Simple;
 	Polinom();
-	Polinom(int num);
-
-	Polinom operator+ (Polinom& other);
-	/*void addMonome(Monome monome) {
+	Polinom(double num);
+	Polinom operator+ (const Polinom& other) const;
+	Polinom operator- (const Polinom& other) const;
+	void addMonome(const Monome& monome) {
 		for( List<Monome>::iterator it = monomes.begin(); it != monomes.end(); it++) {
 			if (it->degree == monome.degree) {
 				int coeff = it->coeff + monome.coeff;
@@ -45,13 +44,11 @@ public:
 			}
 		}
 		monomes.push_back(monome);
-	}*/
+	}
+	Polinom operator* (double num);
 	Polinom operator* (const Polinom& other);
-
 	friend istream& operator >> (istream& in, Polinom& polinom);
-
 	friend ostream& operator << (ostream& out, const Polinom& polinom);
-
 };
 
 
@@ -62,14 +59,14 @@ class Monome
 	friend class Polinom;
 	int degree_sum() const;
 public:
-
 	bool operator> (const Monome& other) const;
-	bool operator < (const Monome& other) const;
-
+	bool operator< (const Monome& other) const;
 	Monome();
-
 	Monome(int coeff, int degree);
+	Monome operator-() const;
+	Monome operator* (double num) const;
 	Monome operator* (const Monome& other) const;
+	bool operator== (const Monome& other) const;
 	friend istream& operator>> (istream& in, Monome& monome);
 	friend ostream& operator<< (ostream& out, const Monome& monome);
 };
