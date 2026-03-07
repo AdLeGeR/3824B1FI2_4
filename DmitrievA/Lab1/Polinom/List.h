@@ -19,8 +19,9 @@ struct Node {
 template <typename T, typename Ptr=T*, typename Ref=T& >
 class Iterator {
 	friend List<T>;
-	Node<T>* current;
+	Node<T>* current = nullptr;
 public:
+	Iterator() {}
 	Iterator(Node<T>* node) {
 		current = node;
 	}
@@ -73,8 +74,11 @@ public:
 	}
 	void insert(iterator it, T data) {
 		Node<T>* newNode = new Node<T>(data);
-		if(it == iterator(first)) {
-			newNode->next = first->next;
+		if (size == 0) {
+			push_back(data);
+		}
+		else if(it == iterator(first)) {
+			newNode->next = first;
 			first->prev = newNode;
 			first = newNode;
 		}
@@ -94,7 +98,10 @@ public:
 	}
 	void erase(iterator it) {
 		Node<T>* node = it.current;
-		if(node == first) {
+		if(node == nullptr) {
+			throw "Can't erase end() iterator";
+		}
+		else if(node == first) {
 			first = node->next;
 			if(first) first->prev = nullptr;
 		}
@@ -121,31 +128,56 @@ public:
 	const_iterator cend() const {
 		return const_iterator(nullptr);
 	}
+
+	
 	void sort() {
-		sort_(begin(), size);
+		sort_(begin(), size, std::less<T>{});
+
+	}
+
+	template <typename Compare>
+	void sort(Compare comp = std::less<T>{}) {
+		sort_(begin(), size, comp);
 		
 	}
 	size_t getSize() const {
 		return size;
 	}
 private:
-	void sort_(iterator iter, size_t len) {
+	template <typename Compare>
+	iterator sort_(iterator iter, size_t len, Compare comp) {
 		if (len == 1)
-			return;
-		auto middle_it = iter;
+			return iter;
+		iterator middle_it = iter;
 		for (size_t i = 0; i < len / 2; i++) middle_it++;
-		sort_(iter, len / 2);
-		sort_(middle_it, len - len / 2);
+		iter = sort_(iter, len / 2, comp);
+		middle_it = sort_(middle_it, len - (len / 2), comp);
 		size_t m_ind = 0;
-		for (size_t i = 0; (i < len - 1) && (len / 2 + m_ind < len); i++) {
-			if (*middle_it > *iter) {
-				auto temp = *middle_it;
-				*middle_it = *iter;
-				*iter = temp;
+		size_t i = 0;
+		iterator start = iter;
+		for (; (iter != middle_it) && (len / 2 + m_ind < len);) {
+			if (comp(*middle_it, *iter)) {
+				Node<T>* middle_node = middle_it.current;
+				Node<T>* iter_node = iter.current;
 				middle_it++;
 				m_ind++;
+				if (middle_node->next != nullptr) middle_node->next->prev = middle_node->prev;
+				else last = middle_node->prev;
+				middle_node->prev->next = middle_node->next;
+				middle_node->next = iter_node;
+				middle_node->prev = iter_node->prev;
+				if(iter_node->prev != nullptr) iter_node->prev->next = middle_node;
+				else first = middle_node;
+				iter_node->prev = middle_node;
+				if (i == 0) {
+					start = iterator(middle_node);
+				}
 			}
-			iter++;
+			else {
+				iter++;
+			}
+			i++;
 		}
+		return start;
 	}
 };

@@ -23,7 +23,7 @@ Polinom Polinom::operator+ (const Polinom& other) const{
 	Polinom result= Polinom();
 	for(List<Monome>::const_iterator it = monomes.cbegin(), it2 = other.monomes.cbegin(); it != monomes.cend() && it2 != other.monomes.cend(); it++, it2++) {
 		if (it->degree == it2->degree) {
-			int coeff = it->coeff + it2->coeff;
+			double coeff = it->coeff + it2->coeff;
 			if(coeff != 0) result.monomes.push_back(Monome(coeff, it->degree));
 		}
 		else if (*it < *it2) {
@@ -40,7 +40,7 @@ Polinom Polinom::operator- (const Polinom& other) const {
 	Polinom result = Polinom();
 	for (List<Monome>::const_iterator it = monomes.cbegin(), it2 = other.monomes.cbegin(); it != monomes.cend() && it2 != other.monomes.cend(); it++, it2++) {
 		if (it->degree == it2->degree) {
-			int coeff = it->coeff - it2->coeff;
+			double coeff = it->coeff - it2->coeff;
 			if (coeff != 0) result.monomes.push_back(Monome(coeff, it->degree));
 		}
 		else if (*it < *it2) {
@@ -58,6 +58,7 @@ Polinom Polinom::operator* (double num) {
 	for (const auto& monome1 : this->monomes) {
 		result.monomes.push_back(monome1 * num);
 	}
+	return result;
 }
 Polinom Polinom::operator* (const Polinom& other) {
 	Polinom result;
@@ -230,7 +231,7 @@ Monome::Monome() {
 	degree = 0;
 }
 
-Monome::Monome(int coeff, int degree) {
+Monome::Monome(double coeff, int degree) {
 	if (degree < 0 || degree > 999) {
 		throw "Degree of monome must be between 0 and 999";
 	}
@@ -249,7 +250,7 @@ Monome Monome::operator* (double num) const {
 	return Monome(coeff * num, degree);
 }
 Monome Monome::operator* (const Monome& other) const {
-	int new_coeff = this->coeff * other.coeff;
+	double new_coeff = this->coeff * other.coeff;
 	if(this->degree%10 + other.degree%10 > 9 || this->degree%100/10 + other.degree%100/10 > 9 || this->degree/100 + other.degree/100 > 9) {
 		throw "Degree of someone variable more than 9";
 	}
