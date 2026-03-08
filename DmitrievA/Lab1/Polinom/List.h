@@ -143,10 +143,20 @@ public:
 	size_t getSize() const {
 		return size;
 	}
+	~List() {
+		if (size == 0) return;
+		if (size == 1) { delete first; return; };
+		for (Node<T>* n = first; n != last;) {
+			Node<T>* temp = n->next;
+			delete n;
+			n = temp;
+		}
+		delete last;
+	}
 private:
 	template <typename Compare>
 	iterator sort_(iterator iter, size_t len, Compare comp) {
-		if (len == 1)
+		if (len <= 1)
 			return iter;
 		iterator middle_it = iter;
 		for (size_t i = 0; i < len / 2; i++) middle_it++;

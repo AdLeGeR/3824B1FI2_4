@@ -23,7 +23,8 @@ int main()
     cin.clear();
     
 	Polinom polinom;
-    polinom.parseMode = (mode == 1) ? Simple : Human;
+    ParseMode parse_mode = (mode == 1) ? Simple : Human;
+    polinom.parseMode = parse_mode;
 	cout << "Enter polinome:" << endl;
 	cin >> polinom;
 	cout << "You entered: " << polinom << endl;
@@ -43,14 +44,6 @@ int main()
         else if (command == 2) {
             Polinom other;
             other.parseMode = polinom.parseMode;
-            cout << "Enter another polinome:" << endl;
-            cin >> other;
-            Polinom result = polinom + other;
-            cout << "Result: " << result << endl;
-        }
-        else if (command == 2) {
-            Polinom other;
-            other.parseMode = polinom.parseMode;
             cout << "Enter another polinome to add:" << endl;
             try {
                 cin >> other;
@@ -62,8 +55,9 @@ int main()
                 continue;
             }
             try {
-                Polinom result = polinom + other;
-                cout << "Result: " << result << endl;
+                polinom = polinom + other;
+                polinom.parseMode = parse_mode;
+                cout << "Result: " << polinom << endl;
             }
             catch (const char* e) {
                 cout << "Operation error: " << e << endl;
@@ -82,8 +76,9 @@ int main()
                 continue;
             }
             try {
-                Polinom result = polinom - other;
-                cout << "Result: " << result << endl;
+                polinom = polinom - other;
+                polinom.parseMode = parse_mode;
+                cout << "Result: " << polinom << endl;
             }
             catch (const char* e) {
                 cout << "Operation error: " << e << endl;
@@ -102,8 +97,9 @@ int main()
                 continue;
             }
             try {
-                Polinom result = polinom * other;
-                cout << "Result: " << result << endl;
+                polinom = polinom * other;
+                polinom.parseMode = parse_mode;
+                cout << "Result: " << polinom << endl;
             }
             catch (const char* e) {
                 cout << "Operation error: " << e << endl;
@@ -134,7 +130,6 @@ int main()
             cout << "Invalid command. Please enter 0, 1, 2, 3 or 4." << endl;
         }
 	}
-    std::cout << "Hello World!\n";
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"

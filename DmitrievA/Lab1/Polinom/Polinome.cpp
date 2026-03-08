@@ -14,44 +14,85 @@ using std::cin;
 using std::to_string;
 using std::greater;
 
-
+const double EPS = 1e-12;
 
 Polinom::Polinom() {}
+
+Polinom::Polinom(const Polinom& other) {
+	this->parseMode = other.parseMode;
+	for (List<Monome>::const_iterator it = other.monomes.cbegin(); it != other.monomes.cend(); ++it) {
+		this->monomes.push_back(*it);
+	}
+}
+
 Polinom::Polinom(double num) {
 	monomes.push_back(Monome(num, 0));
 }
 
+void Polinom::normalize() {
+	for (List<Monome>::iterator it = monomes.begin(); it != monomes.end();) {
+		List<Monome>::iterator next = it;
+		next++;
+		while (next != monomes.end() && it->degree == next->degree) {
+			it->coeff += next->coeff;
+			auto temp = next;
+			next++;
+			monomes.erase(temp);
+		}
+		if (abs(it->coeff) < EPS) {
+			monomes.erase(it);
+			it = next;
+		}
+		else {
+			it++;
+		}
+	}
+}
 Polinom Polinom::operator+ (const Polinom& other) const{
 	Polinom result= Polinom();
-	for(List<Monome>::const_iterator it = monomes.cbegin(), it2 = other.monomes.cbegin(); it != monomes.cend() && it2 != other.monomes.cend(); it++, it2++) {
+	List<Monome>::const_iterator it = monomes.cbegin(), 
+		it2 = other.monomes.cbegin();
+	for(; it != monomes.cend() && it2 != other.monomes.cend();) {
 		if (it->degree == it2->degree) {
 			double coeff = it->coeff + it2->coeff;
-			if(coeff != 0) result.monomes.push_back(Monome(coeff, it->degree));
+			if(abs(coeff) > EPS) result.monomes.push_back(Monome(coeff, it->degree));
+			it++; it2++;
 		}
 		else if (*it < *it2) {
 			result.monomes.push_back(*it2);
+			it2++;
 		}
 		else {
 			result.monomes.push_back(*it);
+			it++;
 		}
 	}
+	for (; it != monomes.cend(); it++) result.monomes.push_back(*it);
+	for (; it2 != monomes.cend(); it2++) result.monomes.push_back(*it2);
 	return result;
 }
 	
 Polinom Polinom::operator- (const Polinom& other) const {
 	Polinom result = Polinom();
-	for (List<Monome>::const_iterator it = monomes.cbegin(), it2 = other.monomes.cbegin(); it != monomes.cend() && it2 != other.monomes.cend(); it++, it2++) {
+	List<Monome>::const_iterator it = monomes.cbegin(), it2 = other.monomes.cbegin();
+	for (; it != monomes.cend() && it2 != other.monomes.cend(); ) {
 		if (it->degree == it2->degree) {
 			double coeff = it->coeff - it2->coeff;
-			if (coeff != 0) result.monomes.push_back(Monome(coeff, it->degree));
+			if (abs(coeff) > EPS) result.monomes.push_back(Monome(coeff, it->degree));
+			it++; it2++;
 		}
 		else if (*it < *it2) {
 			result.monomes.push_back(-(*it2));
+			it2++;
 		}
 		else {
 			result.monomes.push_back(*it);
+			it++;
 		}
+
 	}
+	for (; it != monomes.cend(); it++) result.monomes.push_back(*it);
+	for (; it2 != monomes.cend(); it2++) result.monomes.push_back(-(*it2));
 	return result;
 }
 
@@ -70,23 +111,25 @@ Polinom Polinom::operator* (const Polinom& other) {
 		}
 	}
 	result.monomes.sort(greater<Monome>{});
-	for(List<Monome>::iterator it = result.monomes.begin(); it != result.monomes.end();) {
-		List<Monome>::iterator next = it;
-		next++;
-		while (next != result.monomes.end() && it->degree == next->degree) {
-			it->coeff += next->coeff;
-			result.monomes.erase(next);
-			next++;
-		}
-		if (it->coeff == 0) {
-			result.monomes.erase(it);
-			it = next;
-		}
-		else {
-			it++;
-		}
-	}
+	result.normalize();
 	return result;
+}
+
+Polinom& Polinom::operator= (const Polinom& other) {
+	if (this == &other) return *this; // самоприсвоение
+
+	// очистка текущего списка (удаление узлов)
+	while (monomes.getSize() > 0) {
+		monomes.erase(monomes.begin());
+	}
+
+	// копирование из other
+	for (List<Monome>::const_iterator it = other.monomes.cbegin(); it != other.monomes.cend(); ++it) {
+		monomes.push_back(*it);
+	}
+
+	this->parseMode = other.parseMode;
+	return *this;
 }
 
 double Polinom::evaluate(double x, double y, double z) const {
@@ -119,6 +162,7 @@ istream& operator >> (istream& in, Polinom& polinom) {
 			polinom.monomes.push_back(monome);
 		}
 		polinom.monomes.sort(greater<Monome>{});
+		polinom.normalize();
 		return in;
 	}
 	else {
@@ -128,11 +172,14 @@ istream& operator >> (istream& in, Polinom& polinom) {
 		in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		std::getline(in, line);
 		bool x, y, z, coeff, deg;
+		// deg - появился ли символ ^ для текущей переменной
+		// x, y, z - появились ли символы x, y, z для текущего монома
+		//coeff - появился ли коэффициент для текущего монома
 		x = y = z = coeff = deg = false;
 		int ix, iy, iz, icoeff, sign = 1;
 		ix = iy = iz = icoeff =0;
 		enum variable { X, Y, Z, COEFF };
-		variable cur_var;
+		variable cur_var = COEFF;
 		for (size_t i = 0; i < line.size(); i++)
 		{
 			if (line[i] == ' ') continue;
@@ -162,12 +209,11 @@ istream& operator >> (istream& in, Polinom& polinom) {
 				deg = true;
 			}
 			else if (line[i] >= '0' && line[i] <= '9') {
-				if(!coeff) {
-					cur_var = COEFF;
+				/*if(!coeff && cur_var == COEFF) {
 					coeff = true;
 					icoeff = icoeff * 10 + (line[i] - '0');
 				}
-				else {
+				else {*/
 					if (cur_var == X) {
 						ix = (line[i] - '0');
 						deg = false;
@@ -183,7 +229,7 @@ istream& operator >> (istream& in, Polinom& polinom) {
 					else if (cur_var == COEFF) {
 						icoeff = icoeff * 10 + (line[i] - '0');
 					}
-				}
+				//}
 			}
 			else if (line[i] == 'x') {
 				if (x) { throw "Double x at position " + to_string(i); return in; }
@@ -210,6 +256,7 @@ istream& operator >> (istream& in, Polinom& polinom) {
 		}
 		polinom.monomes.push_back(Monome(sign* (1 > icoeff ? 1 : icoeff), ix * 100 + iy * 10 + iz));
 		polinom.monomes.sort(greater<Monome>{});
+		polinom.normalize();
 	}
 		
 }

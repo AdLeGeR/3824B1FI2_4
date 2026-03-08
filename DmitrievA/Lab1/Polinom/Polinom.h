@@ -20,9 +20,11 @@ class Monome;
 class Polinom
 {
 	List<Monome> monomes = List<Monome>();
+	void normalize();
 public:
 	ParseMode parseMode = Simple;
 	Polinom();
+	Polinom(const Polinom& other);
 	Polinom(double num);
 	Polinom operator+ (const Polinom& other) const;
 	Polinom operator- (const Polinom& other) const;
@@ -47,6 +49,7 @@ public:
 	}*/
 	Polinom operator* (double num);
 	Polinom operator* (const Polinom& other);
+	Polinom& operator= (const Polinom& other);
 	double evaluate(double x, double y, double z) const;
 	friend istream& operator >> (istream& in, Polinom& polinom);
 	friend ostream& operator << (ostream& out, const Polinom& polinom);
