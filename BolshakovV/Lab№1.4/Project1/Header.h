@@ -110,6 +110,9 @@ public:
 	}
 
 	void pop_front() {
+		if (head == nullptr) {
+			return;
+		}
 		Node<T>* temp = head;
 		head = head->pNext;
 		delete temp;
@@ -170,7 +173,7 @@ private:
 
 	F_List<monom> list;
 
-	void QuicSort(std::vector<double>& coeff, std::vector<unsigned int>& degree, int left, int right) {
+	void QuickSort(std::vector<double>& coeff, std::vector<unsigned int>& degree, int left, int right) {
 		int i = left;
 		int j = right;
 
@@ -192,10 +195,10 @@ private:
 		} while (i < j);
 
 		if (i < right) {
-			QuicSort(coeff, degree, i, right);
+			QuickSort(coeff, degree, i, right);
 		}
 		if (j > left) {
-			QuicSort(coeff, degree, left, j);
+			QuickSort(coeff, degree, left, j);
 		}
 	}
 
@@ -248,7 +251,7 @@ public:
 		}
 
 		if (deg.size() > 1) {
-			this->QuicSort(co, deg, 0, deg.size() - 1);
+			this->QuickSort(co, deg, 0, deg.size() - 1);
 		}
 
 		for (size_t i = 0; i < deg.size(); ++i) { //приведение подобных слагаемых
@@ -513,15 +516,16 @@ public:
 
 			int count_dot = 0;
 			number_monom += 1;
+
+			if (co.size() > 1 && co[0] == '0') { //первая цифра числа 0 (длина числа не ноль)
+				throw std::runtime_error("Incorrect coefficient. Monome number: " + std::to_string(number_monom));
+			}
+
+			if (co.size() == 1 && co[0] == '-') { //указан только знак -
+				throw std::runtime_error("Incorrect coefficient. Monome number: " + std::to_string(number_monom));
+			}
+
 			for (size_t i = 0; i < co.size(); ++i) {
-
-				if (co.size() > 1 && co[0] == '0') { //первая цифра числа 0 (длина числа не ноль)
-					throw std::runtime_error("Incorrect coefficient. Monome number: " + std::to_string(number_monom));
-				}
-
-				if (co.size() == 1 && co[0] == '-') { //указан только знак -
-					throw std::runtime_error("Incorrect coefficient. Monome number: " + std::to_string(number_monom));
-				}
 
 				if (co[i] >= '0' && co[i] <= '9') {
 
@@ -541,6 +545,10 @@ public:
 				else { //некорректные символы (пробелы, латинский алфавит и т.д.)
 					throw std::runtime_error("Incorrect coefficient. Monome number: " + std::to_string(number_monom));
 				}
+			}
+
+			if (degr.size() > 1 && degr[0] == '0') {
+				throw std::runtime_error("Incorrect degree. The degree cannot start from zero. Monome number: " + std::to_string(number_monom));
 			}
 
 			for (size_t i = 0; i < degr.size(); ++i) {

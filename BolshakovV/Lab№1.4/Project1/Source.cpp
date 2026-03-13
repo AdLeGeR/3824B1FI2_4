@@ -121,7 +121,7 @@ void add_m(double& coeff, unsigned int& deg) {
 void rules_add_monom() {
 	std::cout << "\nInput rules: the first number is the coefficient, followed by a colon, and the second number is the power.\n";
 	std::cout << "Enter the monomials separated by commas (spaces are not allowed!).\n";
-	std::cout << "Example: 12:123,5:011,4:789 -> polynomial: 4x7y8z9 + 12x1y2z3 + 5x0y1z1.\n";
+	std::cout << "Example: 12:123,5:11,4:789 -> polynomial: 4x7y8z9 + 12x1y2z3 + 5x0y1z1.\n";
 }
 
 
