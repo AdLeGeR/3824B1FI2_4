@@ -12,7 +12,7 @@ TEST(Test_Forward_list_with_f_head, CreateDefaultEmptyListIsCorrectNoThrow)
         });
 }
 
-TEST(Test_Forward_list_with_f_head, PushFrontIsCorrectNoThrow)
+TEST(Test_Forward_list_with_f_head, PushQuickIsCorrectNoThrow)
 {
     Forward_list_with_f_head list;
     std::vector<std::pair<double, size_t>> data;
