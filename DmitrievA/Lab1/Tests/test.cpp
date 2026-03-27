@@ -209,6 +209,34 @@ TEST(MonomeTest, RandomMultiplication) {
         EXPECT_EQ(Monome(co*n, pow), m * n);
     }
 }
+
+TEST(MonomeTest, RandomMultiplicationMonome) {
+    std::random_device rd;
+	int seed = rd(); // фиксируем сид для воспроизводимости теста
+	cout << "seed: " << seed << endl;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> power1(0, 9);
+    std::uniform_real_distribution<> coeff(-1000, 1000);
+    std::uniform_real_distribution<> num(-100, 100);
+    for (int i = 0; i < 1000; i++) {
+        int pow11 = power1(gen);
+        int pow12 = power1(gen);
+        int pow13 = power1(gen);
+        std::uniform_int_distribution<> power21(0, 9 - pow11);
+        std::uniform_int_distribution<> power22(0, 9 - pow12);
+        std::uniform_int_distribution<> power23(0, 9 - pow13);
+        int pow21 = power21(gen);
+        int pow22 = power22(gen);
+        int pow23 = power23(gen);
+        double c1 = coeff(gen);
+        double c2 = coeff(gen);
+        Monome m1(c1, pow11*100+pow12*10+pow13);
+        Monome m2(c2, pow21 * 100 + pow22 * 10 + pow23);
+        Monome m3(c1*c2, pow11 * 100 + pow12 * 10 + pow13 + pow21 * 100 + pow22 * 10 + pow23);
+        EXPECT_EQ(m1*m2, m3);
+    }
+}
+
 TEST(MonomeTest, MultiplicationOverflow) {
     Monome m1(1, 900);
     Monome m2(1, 100);
@@ -218,6 +246,8 @@ TEST(MonomeTest, InvalidDegree) {
     EXPECT_THROW(Monome(1, -1), const char*);
     EXPECT_THROW(Monome(1, 1000), const char*);
 }
+
+
 
 
 // ------------------------- Polinom TESTS --------------------------------------

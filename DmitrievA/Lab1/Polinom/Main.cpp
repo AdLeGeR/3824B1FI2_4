@@ -127,7 +127,7 @@ int main()
             }
         }
         else if (command != 0) {
-            cout << "Invalid command. Please enter 0, 1, 2, 3 or 4." << endl;
+            cout << "Invalid command. Please enter 0, 1, 2, 3, 4 or 5." << endl;
         }
 	}
 }
