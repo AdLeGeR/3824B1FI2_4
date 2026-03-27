@@ -169,16 +169,20 @@ private:
 			if (comp(*middle_it, *iter)) {
 				Node<T>* middle_node = middle_it.current;
 				Node<T>* iter_node = iter.current;
+				// увеличение итератора и индекса
 				middle_it++;
 				m_ind++;
+				// склейка предыдущего и следующего узла для middle_node
 				if (middle_node->next != nullptr) middle_node->next->prev = middle_node->prev;
 				else last = middle_node->prev;
 				middle_node->prev->next = middle_node->next;
+				//вставка middle_node перед iter_node
 				middle_node->next = iter_node;
 				middle_node->prev = iter_node->prev;
 				if(iter_node->prev != nullptr) iter_node->prev->next = middle_node;
 				else first = middle_node;
 				iter_node->prev = middle_node;
+				// если мы вставили в начало, то обновляем start
 				if (i == 0) {
 					start = iterator(middle_node);
 				}

@@ -171,37 +171,40 @@ istream& operator >> (istream& in, Polinom& polinom) {
 		std::string line;
 		in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		std::getline(in, line);
-		bool x, y, z, coeff, deg;
+		bool x, y, z, coeff, deg, frac;
 		// deg - появился ли символ ^ для текущей переменной
 		// x, y, z - появились ли символы x, y, z для текущего монома
 		//coeff - появился ли коэффициент для текущего монома
-		x = y = z = coeff = deg = false;
-		int ix, iy, iz, icoeff, sign = 1;
-		ix = iy = iz = icoeff =0;
-		enum variable { X, Y, Z, COEFF };
+		x = y = z = coeff = frac = deg = false;
+		int ix, iy, iz, frac_len, sign = 1;
+		double dcoeff=0;
+		double dfrac = 0;
+		ix = iy = iz = frac_len = 0;
+		enum variable { X, Y, Z, COEFF, FRAC };
 		variable cur_var = COEFF;
 		for (size_t i = 0; i < line.size(); i++)
 		{
 			if (line[i] == ' ') continue;
 			if (line[i] == '+') {
-				polinom.monomes.push_back(Monome(sign* (1 > icoeff ? 1 : icoeff),ix*100+iy*10+iz));
+				polinom.monomes.push_back(Monome(sign* (coeff ? dcoeff+dfrac : 1),ix*100+iy*10+iz));
 				x = y = z = coeff = false;
-				ix = iy = iz = icoeff = 0;
+				ix = iy = iz = dcoeff = dfrac = frac_len = 0;
 				sign = 1;
 				cur_var = COEFF;
 				continue;
 			}
-			if (line[i] == '-' && polinom.monomes.getSize() > 0) {
-				polinom.monomes.push_back(Monome(sign * (1 > icoeff ? 1 : icoeff), ix * 100 + iy * 10 + iz));
+			if (line[i] == '-' && (x == y) && (y == z) &&(z == coeff)&&(coeff == frac)&&(frac == false) ) {
+				sign = -1;
+				continue;
+			}
+			else if (line[i] == '-') {
+				polinom.monomes.push_back(Monome(sign * (coeff ? dcoeff + dfrac : 1), ix * 100 + iy * 10 + iz));
 				x = y = z = coeff = false;
-				ix = iy = iz = icoeff = 0;
+				ix = iy = iz = dcoeff = dfrac = frac_len = 0;
 				sign = -1;
 				cur_var = COEFF;
 				continue;
-			}
-			else if (line[i] == '-' && polinom.monomes.getSize() == 0) {
-				sign = -1;
-				continue;
+				
 			}
 			else if (line[i] == '*') continue;
 			if (line[i] == '^') {
@@ -209,27 +212,40 @@ istream& operator >> (istream& in, Polinom& polinom) {
 				deg = true;
 			}
 			else if (line[i] >= '0' && line[i] <= '9') {
-				/*if(!coeff && cur_var == COEFF) {
-					coeff = true;
-					icoeff = icoeff * 10 + (line[i] - '0');
+				
+				if (cur_var == X) {
+					ix = (line[i] - '0');
+					deg = false;
 				}
-				else {*/
-					if (cur_var == X) {
-						ix = (line[i] - '0');
-						deg = false;
-					}
-					else if (cur_var == Y) {
-						iy = (line[i] - '0');
-						deg = false;
-					}
-					else if (cur_var == Z) {
-						iz = (line[i] - '0');
-						deg = false;
-					}
-					else if (cur_var == COEFF) {
-						icoeff = icoeff * 10 + (line[i] - '0');
-					}
-				//}
+				else if (cur_var == Y) {
+					iy = (line[i] - '0');
+					deg = false;
+				}
+				else if (cur_var == Z) {
+					iz = (line[i] - '0');
+					deg = false;
+				}
+				else if (cur_var == COEFF) {
+					dcoeff = dcoeff * 10 + (line[i] - '0');
+					coeff = true;
+				}
+				else if (cur_var == FRAC) {
+					frac_len++;
+					dfrac += pow(0.1, frac_len)*(line[i] - '0');
+				}
+				else {
+					throw "Invalid state at position " + to_string(i);
+					return in;
+				}
+				
+			}
+			else if (line[i] == '.') {
+				if (cur_var != COEFF) {
+					throw "Fractional part can only be in coefficient at position " + to_string(i);
+					return in;
+				}
+				cur_var = FRAC;
+				frac = true;
 			}
 			else if (line[i] == 'x') {
 				if (x) { throw "Double x at position " + to_string(i); return in; }
@@ -254,7 +270,7 @@ istream& operator >> (istream& in, Polinom& polinom) {
 				return in;
 			}
 		}
-		polinom.monomes.push_back(Monome(sign* (1 > icoeff ? 1 : icoeff), ix * 100 + iy * 10 + iz));
+		polinom.monomes.push_back(Monome(sign* (coeff ? dcoeff + dfrac : 1), ix * 100 + iy * 10 + iz));
 		polinom.monomes.sort(greater<Monome>{});
 		polinom.normalize();
 	}
