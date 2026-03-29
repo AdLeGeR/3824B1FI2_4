@@ -87,7 +87,7 @@ jobs:
                   if [[ -z "${PR_COMMENT_MAP[$key]}" ]]; then
                     ORIG_LINE=$(sed -n "${LINE_NUM}p" "$file" | sed 's/^[[:space:]]*//')
                     FIX_LINE=$(clang-format "$file" | sed -n "${LINE_NUM}p" | sed 's/^[[:space:]]*//')
-                    PR_COMMENT_MAP[$key]="- **$file:$LINE_NUM**\n  \`\`\`diff\n- $ORIG_LINE\n+ $FIX_LINE\n  \`\`\`"
+                    PR_COMMENT_MAP[$key]="- **$file:$LINE_NUM**\n\`\`\`diff\n- $ORIG_LINE\n+ $FIX_LINE\n\`\`\`"
                   fi
                 fi
               done < clang_output.tmp
@@ -102,18 +102,14 @@ jobs:
             fi
           done
           echo "ERROR_COUNT=$ERROR_COUNT" >> $GITHUB_OUTPUT
-
           delimiter="EOF_$(date +%s)_${RANDOM}"
-
           echo "UNFORMATTED_FILES<<${delimiter}" >> $GITHUB_OUTPUT
           printf "%b\n" "$UNFORMATTED_FILES" >> $GITHUB_OUTPUT
           echo "${delimiter}" >> $GITHUB_OUTPUT
-
           echo "PR_COMMENT<<${delimiter}" >> $GITHUB_OUTPUT
           printf "%b" "$PR_COMMENT" >> $GITHUB_OUTPUT
           echo >> $GITHUB_OUTPUT
           echo "${delimiter}" >> $GITHUB_OUTPUT
-
           if [ $ERROR_COUNT -gt 0 ]; then
             exit 1
           fi
