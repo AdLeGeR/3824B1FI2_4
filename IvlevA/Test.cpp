@@ -1,4 +1,4 @@
-"Copyright [2026] <IvlevA>"
+// Copyright 2026 <IvlevA>
 
 #include <iostream>
 
