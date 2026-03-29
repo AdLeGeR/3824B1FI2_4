@@ -93,7 +93,6 @@ jobs:
               done < clang_output.tmp
             fi
           done
-
           PR_COMMENT=""
           for entry in "${PR_COMMENT_MAP[@]}"; do
             if [ -z "$PR_COMMENT" ]; then
@@ -103,12 +102,18 @@ jobs:
             fi
           done
           echo "ERROR_COUNT=$ERROR_COUNT" >> $GITHUB_OUTPUT
-          echo "UNFORMATTED_FILES<<EOF" >> $GITHUB_OUTPUT
+
+          delimiter="EOF_$(date +%s)_${RANDOM}"
+
+          echo "UNFORMATTED_FILES<<${delimiter}" >> $GITHUB_OUTPUT
           printf "%b\n" "$UNFORMATTED_FILES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "PR_COMMENT<<EOF" >> $GITHUB_OUTPUT
-          printf "%s" "$PR_COMMENT" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "${delimiter}" >> $GITHUB_OUTPUT
+
+          echo "PR_COMMENT<<${delimiter}" >> $GITHUB_OUTPUT
+          printf "%b" "$PR_COMMENT" >> $GITHUB_OUTPUT
+          echo >> $GITHUB_OUTPUT
+          echo "${delimiter}" >> $GITHUB_OUTPUT
+
           if [ $ERROR_COUNT -gt 0 ]; then
             exit 1
           fi
