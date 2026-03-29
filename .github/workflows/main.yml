@@ -68,6 +68,7 @@ jobs:
       - name: Run clang-format
         id: clang-format
         if: steps.skip.outputs.skip == 'false' && steps.changed-files.outputs.any_changed == 'true'
+        continue-on-error: true
         run: |
           ERROR_COUNT=0
           UNFORMATTED_FILES=""
@@ -111,45 +112,62 @@ jobs:
           echo >> $GITHUB_OUTPUT
           echo "${delimiter}" >> $GITHUB_OUTPUT
           if [ $ERROR_COUNT -gt 0 ]; then
-            exit 1
+            echo "CLANG_FORMAT_FAILED=true" >> $GITHUB_OUTPUT
+          else
+            echo "CLANG_FORMAT_FAILED=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Run cpplint
+        id: cpplint
         if: steps.skip.outputs.skip == 'false' && steps.changed-files.outputs.any_changed == 'true'
+        continue-on-error: true
         run: |
           IFS=',' read -ra CHANGED_FILES <<< "${{ steps.changed-files.outputs.all_changed_files }}"
-          cpplint_errors=0
+          CPPLINT_ERRORS=""
+          CPPLINT_FAILED=false
           for file in "${CHANGED_FILES[@]}"; do
-            if ! cpplint --filter=-build/c++11,-build/c++14,-runtime/references --verbose=0 "$file"; then
-              cpplint_errors=1
+            if [ ! -f "$file" ]; then
+              continue
+            fi
+            OUTPUT=$(cpplint --filter=-build/c++11,-build/c++14,-runtime/references --verbose=0 "$file" 2>&1) || CPPLINT_FAILED=true
+            if [ -n "$OUTPUT" ]; then
+              CPPLINT_ERRORS="$CPPLINT_ERRORS\n\n### $file\n\`\`\`\n$OUTPUT\n\`\`\`"
             fi
           done
-          if [ $cpplint_errors -ne 0 ]; then
-            exit 1
-          fi
+          echo "CPPLINT_FAILED=$CPPLINT_FAILED" >> $GITHUB_OUTPUT
+          delimiter="EOF_$(date +%s)_${RANDOM}"
+          echo "CPPLINT_ERRORS<<${delimiter}" >> $GITHUB_OUTPUT
+          printf "%b" "$CPPLINT_ERRORS" >> $GITHUB_OUTPUT
+          echo >> $GITHUB_OUTPUT
+          echo "${delimiter}" >> $GITHUB_OUTPUT
 
-      - name: Comment PR on formatting errors
-        if: github.event_name == 'pull_request' && failure() && steps.clang-format.outputs.PR_COMMENT != ''
+      - name: Comment PR on errors
+        if: github.event_name == 'pull_request' && (steps.clang-format.outputs.CLANG_FORMAT_FAILED == 'true' || steps.cpplint.outputs.CPPLINT_FAILED == 'true')
         uses: actions/github-script@v7
         env:
-          PR_COMMENT: ${{ steps.clang-format.outputs.PR_COMMENT }}
+          CLANG_COMMENT: ${{ steps.clang-format.outputs.PR_COMMENT }}
+          CPPLINT_ERRORS: ${{ steps.cpplint.outputs.CPPLINT_ERRORS }}
         with:
           script: |
-            const commentBody = `## Code formatting issues found
-
-            The following files need to be formatted with **clang-format**:
-
-            ${process.env.PR_COMMENT}
-
-            `;
+            let body = `Code style issues found\n\n`;
+            if (process.env.CLANG_COMMENT && process.env.CLANG_COMMENT.trim() !== '') {
+              body += `Formatting errors (clang-format):\n\n${process.env.CLANG_COMMENT}\n\n`;
+            }
+            if (process.env.CPPLINT_ERRORS && process.env.CPPLINT_ERRORS.trim() !== '') {
+              body += `Linting errors (cpplint):\n\n${process.env.CPPLINT_ERRORS}\n\n`;
+            }
             const maxLen = 65535;
-            const finalBody = commentBody.length > maxLen ? commentBody.slice(0, maxLen-100) + "\n\n... (truncated)" : commentBody;
+            const finalBody = body.length > maxLen ? body.slice(0, maxLen-100) + "\n\n... (truncated)" : body;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: finalBody
             });
+
+      - name: Fail if any linter failed
+        if: steps.clang-format.outputs.CLANG_FORMAT_FAILED == 'true' || steps.cpplint.outputs.CPPLINT_FAILED == 'true'
+        run: exit 1
 
       - name: Success comment on PR
         if: github.event_name == 'pull_request' && success() && steps.changed-files.outputs.any_changed == 'true'
@@ -160,9 +178,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '**Code formatting check passed!** All changed files are properly formatted.'
+              body: 'Code style check passed. All changed files are properly formatted and pass cpplint.'
             });
 
       - name: Skip message
         if: steps.skip.outputs.skip == 'false' && steps.changed-files.outputs.any_changed == 'false'
-        run: echo "No C++ files changed – skipping formatting check."
+        run: echo "No C++ files changed – skipping code style check."
