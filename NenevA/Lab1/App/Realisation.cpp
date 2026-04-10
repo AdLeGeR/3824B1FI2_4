@@ -5,6 +5,7 @@ my_list::iterator::iterator(Node* ptr) : current_node(ptr) {}
 Monomial& my_list::iterator::operator*() const { return current_node->Elem; }
 
 Monomial* my_list::iterator::operator->() const { return &(current_node->Elem); }
+
 my_list::iterator& my_list::iterator::operator++() {
     if (current_node) current_node = current_node->next;
     return *this;
@@ -20,6 +21,7 @@ bool my_list::iterator::operator!=(const iterator& other) const { return current
 my_list::const_iterator::const_iterator(const Node* ptr) : current_node(ptr) {}
 const Monomial& my_list::const_iterator::operator*() const { return current_node->Elem; }
 const Monomial* my_list::const_iterator::operator->() const { return &(current_node->Elem); }
+
 my_list::const_iterator& my_list::const_iterator::operator++() {
     if (current_node) current_node = current_node->next;
     return *this;
@@ -47,8 +49,10 @@ my_list& my_list::operator=(my_list other) {
     swap(_size, other._size);
     return *this;
 }
+
 bool my_list::empty() const { return head == nullptr; }
 size_t my_list::size() const { return _size; }
+
 void my_list::clear() {
     Node* current = head;
     while (current != nullptr) {
@@ -60,6 +64,7 @@ void my_list::clear() {
     tail = nullptr;
     _size = 0;
 }
+
 void my_list::emplace_back(Monomial M) {
     Node* p = new Node(M);
     if (empty()) {
@@ -72,18 +77,28 @@ void my_list::emplace_back(Monomial M) {
     }
     _size++;
 }
+
 void my_list::emplace_back(double c, int d) {
     emplace_back(Monomial(c, d));
 }
 
 void my_list::sort() {
     if (empty() || head == tail) return;
-    vector<Monomial> temp_vec;
-    for (const Monomial& m : *this) temp_vec.emplace_back(m);
 
-    std::sort(temp_vec.begin(), temp_vec.end());
-    clear();
-    for (const Monomial& m : temp_vec) emplace_back(m);
+    bool swapped;
+    Node* end_ptr = nullptr; 
+    do {
+        swapped = false;
+        Node* current = head;
+        while (current->next != end_ptr) {
+            if (current->next->Elem < current->Elem) {
+                std::swap(current->Elem, current->next->Elem);
+                swapped = true;
+            }
+            current = current->next;
+        }
+        end_ptr = current; 
+    } while (swapped);
 }
 
 my_list::iterator my_list::begin() { return iterator(head); }
