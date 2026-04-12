@@ -15,16 +15,6 @@ permissions:
   checks: write
 
 jobs:
-  labeler:
-    name: labeler
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: labeler
-        uses: fuxingloh/multi-labeler@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
   code-style:
     name: Formatting & Linting
     runs-on: ubuntu-latest
