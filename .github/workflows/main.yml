@@ -3,9 +3,9 @@ name: pull_request_check
 on:
   push:
     branches: [ main, master, develop ]
-  pull_request:
+  pull_request_target:
     branches: [ "*" ]
-    types: [ opened, edited, synchronize ]
+    types: [ opened, synchronize, edited ]
 
 permissions:
   contents: read
@@ -19,16 +19,33 @@ jobs:
     name: Formatting & Linting
     runs-on: ubuntu-latest
     steps:
+      - name: Get PR commit message for skip check
+        id: pr-commit-message
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: commits } = await github.rest.pulls.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100
+            });
+            const lastCommit = commits[commits.length - 1];
+            const message = lastCommit.commit.message;
+            core.setOutput('message', message);
+            core.setOutput('skip', /\[skip-format\]/.test(message));
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
-      - name: Check for skip label
+      - name: Set skip flag
         id: skip
         run: |
-          if [[ "${{ github.event.head_commit.message }}" =~ \[skip-format\] ]]; then
+          if [[ "${{ steps.pr-commit-message.outputs.skip }}" == "true" ]]; then
             echo "skip=true" >> $GITHUB_OUTPUT
           else
             echo "skip=false" >> $GITHUB_OUTPUT
@@ -132,7 +149,7 @@ jobs:
           echo "${delimiter}" >> $GITHUB_OUTPUT
 
       - name: Comment PR on errors
-        if: github.event_name == 'pull_request' && (steps.clang-format.outputs.CLANG_FORMAT_FAILED == 'true' || steps.cpplint.outputs.CPPLINT_FAILED == 'true')
+        if: github.event_name == 'pull_request_target' && (steps.clang-format.outputs.CLANG_FORMAT_FAILED == 'true' || steps.cpplint.outputs.CPPLINT_FAILED == 'true')
         uses: actions/github-script@v7
         env:
           CLANG_COMMENT: ${{ steps.clang-format.outputs.PR_COMMENT }}
@@ -160,7 +177,7 @@ jobs:
         run: exit 1
 
       - name: Success comment on PR
-        if: github.event_name == 'pull_request' && success() && steps.changed-files.outputs.any_changed == 'true'
+        if: github.event_name == 'pull_request_target' && success() && steps.changed-files.outputs.any_changed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
