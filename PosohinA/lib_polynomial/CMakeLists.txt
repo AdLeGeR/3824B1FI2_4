@@ -1,2 +1,0 @@
-create_project_lib(Polynomial)
-target_link_libraries(Polynomial PUBLIC List)
