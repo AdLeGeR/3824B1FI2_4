@@ -51,6 +51,12 @@ jobs:
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Debug git
+        run: |
+          echo "Base SHA: ${{ github.event.pull_request.base.sha }}"
+          git cat-file -t ${{ github.event.pull_request.base.sha }} || echo "Base commit not found!"
+          git log --oneline -5
+
       - name: Get changed files
         id: changed-files
         if: steps.skip.outputs.skip == 'false'
@@ -64,6 +70,7 @@ jobs:
             **/*.cc
             **/*.cxx
           separator: ","
+          skip_initial_fetch: true
 
       - name: Install tools
         if: steps.skip.outputs.skip == 'false' && steps.changed-files.outputs.any_changed == 'true'
