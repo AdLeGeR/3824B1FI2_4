@@ -75,6 +75,7 @@ jobs:
             **/*.cc
             **/*.cxx
           separator: ","
+          base_sha: "a1304917905e7552a8adbb9e6542bd972c25000d"
 
       - name: Install tools
         if: steps.skip.outputs.skip == 'false' && steps.changed-files.outputs.any_changed == 'true'
