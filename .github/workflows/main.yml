@@ -42,6 +42,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
+      - name: Fetch base branch to get base commit
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.sha }} --no-tags
+
       - name: Set skip flag
         id: skip
         run: |
@@ -62,6 +66,7 @@ jobs:
         if: steps.skip.outputs.skip == 'false'
         uses: tj-actions/changed-files@v44
         with:
+          skip_initial_fetch: true
           files: |
             **/*.cpp
             **/*.h
@@ -70,7 +75,6 @@ jobs:
             **/*.cc
             **/*.cxx
           separator: ","
-          skip_initial_fetch: true
 
       - name: Install tools
         if: steps.skip.outputs.skip == 'false' && steps.changed-files.outputs.any_changed == 'true'
