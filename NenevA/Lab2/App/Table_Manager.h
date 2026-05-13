@@ -25,7 +25,7 @@ std::string ToString(const T& value) {
 template <typename ValType>
 class TableManager {
  public:
-  TableManager();
+  TableManager(int hashTSize = 10);
   ~TableManager();
 
   void Run();
@@ -69,8 +69,8 @@ class TableManager {
 };
 
 template <typename ValType>
-TableManager<ValType>::TableManager()
-    : hash_table_(10), log_file_("log.txt", std::ios::app) {
+TableManager<ValType>::TableManager(int hashTSize)
+    : hash_table_(hashTSize), log_file_("log.txt", std::ios::app) {
   if (!log_file_.is_open()) {
     std::cerr << "Failed to open the file log.txt" << std::endl;
   } else {
@@ -100,84 +100,96 @@ void TableManager<ValType>::Log(const std::string& message, int operations) {
 
 template <typename ValType>
 void TableManager<ValType>::HandleEmplace() {
+  int opCounter;
   std::string key;
   ValType value;
   std::cout << "Enter the key and the value: ";
   std::cin >> key >> value;
 
+  opCounter = hash_table_.GetOperationNumber();
   hash_table_.EmplaceBack(key, value);
   int hash_ops = hash_table_.GetOperationNumber();
-  Log("HashTable: emplace(" + key + ", " + ToString(value) + ")", hash_ops);
+  Log("HashTable: emplace(" + key + ", " + ToString(value) + ")", hash_ops - opCounter);
   hash_stats_.emplace_count++;
 
+  opCounter = unordered_table_.GetOperationNumber();
   unordered_table_.EmplaceBack(key, value);
   int unordered_ops = unordered_table_.GetOperationNumber();
-  Log("UnorderedTable: emplace(" + key + ", " + ToString(value) + ")", unordered_ops);
+  Log("UnorderedTable: emplace(" + key + ", " + ToString(value) + ")", unordered_ops - opCounter);
   unordered_stats_.emplace_count++;
 
+  opCounter = avl_tree_.GetOperationNumber();
   avl_tree_.EmplaceBack(key, value);
   int avl_ops = avl_tree_.GetOperationNumber();
-  Log("AvlTree: emplace(" + key + ", " + ToString(value) + ")", avl_ops);
+  Log("AvlTree: emplace(" + key + ", " + ToString(value) + ")", avl_ops - opCounter);
   avl_stats_.emplace_count++;
 }
 
 template <typename ValType>
 void TableManager<ValType>::HandleErase() {
+  int opCounter;
   std::string key;
   std::cout << "Enter the key for removing: ";
   std::cin >> key;
 
+  opCounter = hash_table_.GetOperationNumber();
   hash_table_.Erase(key);
   int hash_ops = hash_table_.GetOperationNumber();
-  Log("HashTable: erase(" + key + ")", hash_ops);
+  Log("HashTable: erase(" + key + ")", hash_ops - opCounter);
   hash_stats_.erase_count++;
 
+  opCounter = unordered_table_.GetOperationNumber();
   unordered_table_.Erase(key);
   int unordered_ops = unordered_table_.GetOperationNumber();
-  Log("UnorderedTable: erase(" + key + ")", unordered_ops);
+  Log("UnorderedTable: erase(" + key + ")", unordered_ops - opCounter);
   unordered_stats_.erase_count++;
 
+  opCounter = avl_tree_.GetOperationNumber();
   avl_tree_.Erase(key);
   int avl_ops = avl_tree_.GetOperationNumber();
-  Log("AvlTree: erase(" + key + ")", avl_ops);
+  Log("AvlTree: erase(" + key + ")", avl_ops - opCounter);
   avl_stats_.erase_count++;
 }
 
 template <typename ValType>
 void TableManager<ValType>::HandleFind() {
+  int opCounter;
   std::string key;
   std::cout << "Enter the key for search: ";
   std::cin >> key;
 
+  opCounter = hash_table_.GetOperationNumber();
   ValType* result = hash_table_.Find(key);
   int hash_ops = hash_table_.GetOperationNumber();
   if (result) {
-    Log("HashTable: find(" + key + ") = " + ToString(*result), hash_ops);
+    Log("HashTable: find(" + key + ") = " + ToString(*result), hash_ops - opCounter);
     std::cout << "Hash table : " << key << " " << *result << "\n";
   } else {
-    Log("HashTable: find(" + key + ") = not found", hash_ops);
+    Log("HashTable: find(" + key + ") = not found", hash_ops - opCounter);
     std::cout << "The record with such a key hasn't been found\n";
   }
   hash_stats_.find_count++;
 
+  opCounter = unordered_table_.GetOperationNumber();
   result = unordered_table_.Find(key);
   int unordered_ops = unordered_table_.GetOperationNumber();
   if (result) {
-    Log("UnorderedTable: find(" + key + ") = " + ToString(*result), unordered_ops);
+    Log("UnorderedTable: find(" + key + ") = " + ToString(*result), unordered_ops - opCounter);
     std::cout << "Unordered table : " << key << " " << *result << "\n";
   } else {
-    Log("UnorderedTable: find(" + key + ") = not found", unordered_ops);
+    Log("UnorderedTable: find(" + key + ") = not found", unordered_ops - opCounter);
     std::cout << "The record with such a key hasn't been found\n";
   }
   unordered_stats_.find_count++;
 
+  opCounter = avl_tree_.GetOperationNumber();
   result = avl_tree_.Find(key);
   int avl_ops = avl_tree_.GetOperationNumber();
   if (result) {
-    Log("AvlTree: find(" + key + ") = " + ToString(*result), avl_ops);
+    Log("AvlTree: find(" + key + ") = " + ToString(*result), avl_ops - opCounter);
     std::cout << "AvlTree : " << key << " " << *result << "\n";
   } else {
-    Log("AvlTree: find(" + key + ") = not found", avl_ops);
+    Log("AvlTree: find(" + key + ") = not found", avl_ops - opCounter);
     std::cout << "The record with such a key hasn't been found\n";
   }
   avl_stats_.find_count++;
@@ -185,22 +197,26 @@ void TableManager<ValType>::HandleFind() {
 
 template <typename ValType>
 void TableManager<ValType>::HandlePrint() {
+  int opCounter;
   std::cout << "\n HashTable \n";
+  opCounter = hash_table_.GetOperationNumber();
   hash_table_.Print();
   int hash_ops = hash_table_.GetOperationNumber();
-  Log("HashTable: print()", hash_ops);
+  Log("HashTable: print()", hash_ops - opCounter);
   hash_stats_.print_count++;
 
+  opCounter = unordered_table_.GetOperationNumber();
   std::cout << "\n UnorderedTable \n";
   unordered_table_.Print();
   int unordered_ops = unordered_table_.GetOperationNumber();
-  Log("UnorderedTable: print()", unordered_ops);
+  Log("UnorderedTable: print()", unordered_ops - opCounter);
   unordered_stats_.print_count++;
 
+  opCounter = avl_tree_.GetOperationNumber();
   std::cout << "\n AvlTree \n";
   avl_tree_.Print();
   int avl_ops = avl_tree_.GetOperationNumber();
-  Log("AvlTree: print()", avl_ops);
+  Log("AvlTree: print()", avl_ops - opCounter);
   avl_stats_.print_count++;
 }
 
@@ -229,6 +245,7 @@ void TableManager<ValType>::HandlePolynomialOperations() {
     p2 = SelectPolynomial("Select or enter second polynomial");
   }
 
+  int opCounter;
   switch (choice) {
     case 1:  // Addition
       result = p1 + p2;
@@ -236,19 +253,22 @@ void TableManager<ValType>::HandlePolynomialOperations() {
       std::cout << "Enter key for storing result: ";
       std::cin >> result_key;
 
+      opCounter = hash_table_.GetOperationNumber();
       hash_table_.EmplaceBack(result_key, result);
       Log("HashTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          hash_table_.GetOperationNumber());
+          hash_table_.GetOperationNumber() - opCounter);
       hash_stats_.emplace_count++;
 
+      opCounter = unordered_table_.GetOperationNumber();
       unordered_table_.EmplaceBack(result_key, result);
       Log("UnorderedTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          unordered_table_.GetOperationNumber());
+          unordered_table_.GetOperationNumber() - opCounter);
       unordered_stats_.emplace_count++;
 
+      opCounter = avl_tree_.GetOperationNumber();
       avl_tree_.EmplaceBack(result_key, result);
       Log("AvlTree: emplace(" + result_key + ", " + ToString(result) + ")",
-          avl_tree_.GetOperationNumber());
+          avl_tree_.GetOperationNumber() - opCounter);
       avl_stats_.emplace_count++;
       break;
 
@@ -258,19 +278,22 @@ void TableManager<ValType>::HandlePolynomialOperations() {
       std::cout << "Enter key for storing result: ";
       std::cin >> result_key;
 
+      opCounter = hash_table_.GetOperationNumber();
       hash_table_.EmplaceBack(result_key, result);
       Log("HashTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          hash_table_.GetOperationNumber());
+          hash_table_.GetOperationNumber() - opCounter);
       hash_stats_.emplace_count++;
 
+      opCounter = unordered_table_.GetOperationNumber();
       unordered_table_.EmplaceBack(result_key, result);
       Log("UnorderedTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          unordered_table_.GetOperationNumber());
+          unordered_table_.GetOperationNumber() - opCounter);
       unordered_stats_.emplace_count++;
 
+      opCounter = avl_tree_.GetOperationNumber();
       avl_tree_.EmplaceBack(result_key, result);
       Log("AvlTree: emplace(" + result_key + ", " + ToString(result) + ")",
-          avl_tree_.GetOperationNumber());
+          avl_tree_.GetOperationNumber() - opCounter);
       avl_stats_.emplace_count++;
       break;
 
@@ -280,19 +303,22 @@ void TableManager<ValType>::HandlePolynomialOperations() {
       std::cout << "Enter key for storing result: ";
       std::cin >> result_key;
 
+      opCounter = hash_table_.GetOperationNumber();
       hash_table_.EmplaceBack(result_key, result);
       Log("HashTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          hash_table_.GetOperationNumber());
+          hash_table_.GetOperationNumber() - opCounter);
       hash_stats_.emplace_count++;
 
+      opCounter = unordered_table_.GetOperationNumber();
       unordered_table_.EmplaceBack(result_key, result);
       Log("UnorderedTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          unordered_table_.GetOperationNumber());
+          unordered_table_.GetOperationNumber() - opCounter);
       unordered_stats_.emplace_count++;
 
+      opCounter = avl_tree_.GetOperationNumber();
       avl_tree_.EmplaceBack(result_key, result);
       Log("AvlTree: emplace(" + result_key + ", " + ToString(result) + ")",
-          avl_tree_.GetOperationNumber());
+          avl_tree_.GetOperationNumber() - opCounter);
       avl_stats_.emplace_count++;
       break;
 
@@ -304,19 +330,22 @@ void TableManager<ValType>::HandlePolynomialOperations() {
       std::cout << "Enter key for storing result: ";
       std::cin >> result_key;
 
+      opCounter = hash_table_.GetOperationNumber();
       hash_table_.EmplaceBack(result_key, result);
       Log("HashTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          hash_table_.GetOperationNumber());
+          hash_table_.GetOperationNumber() - opCounter);
       hash_stats_.emplace_count++;
 
+      opCounter = unordered_table_.GetOperationNumber();
       unordered_table_.EmplaceBack(result_key, result);
       Log("UnorderedTable: emplace(" + result_key + ", " + ToString(result) + ")",
-          unordered_table_.GetOperationNumber());
+          unordered_table_.GetOperationNumber() - opCounter);
       unordered_stats_.emplace_count++;
 
+      opCounter = avl_tree_.GetOperationNumber();
       avl_tree_.EmplaceBack(result_key, result);
       Log("AvlTree: emplace(" + result_key + ", " + ToString(result) + ")",
-          avl_tree_.GetOperationNumber());
+          avl_tree_.GetOperationNumber() - opCounter);
       avl_stats_.emplace_count++;
       break;
   }

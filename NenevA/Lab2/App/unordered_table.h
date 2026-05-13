@@ -21,7 +21,7 @@ class UnorderedTable {
   void EmplaceBack(const std::string& key, const ValType& value);
   void Erase(const std::string& key);
   ValType* Find(const std::string& key);
-  void Print() const;
+  void Print();
   void PrintOperations() const;
   int GetOperationNumber() const;
   void Reset();
@@ -60,6 +60,7 @@ void UnorderedTable<ValType>::EmplaceBack(const std::string& key,
       return;
     }
   }
+  unordered_counters_++;
   data_.emplace_back(key, value);
 }
 
@@ -90,8 +91,9 @@ ValType* UnorderedTable<ValType>::Find(const std::string& key) {
 }
 
 template <typename ValType>
-void UnorderedTable<ValType>::Print() const {
+void UnorderedTable<ValType>::Print() {
   for (std::size_t i = 0; i < data_.size(); ++i) {
+    unordered_counters_++;
     std::cout << i << " " << data_[i].key << " " << data_[i].value << "\n";
   }
 }

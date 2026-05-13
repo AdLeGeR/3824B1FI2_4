@@ -140,18 +140,37 @@ Polinomial& Polinomial::operator=(const Polinomial& other) {
 
 Polinomial Polinomial::operator+(const Polinomial& other) const {
     Polinomial result;
-    std::vector<Monomial> temp1, temp2;
 
-    for (auto& it : this->data_) temp1.emplace_back(it);
-    for (auto& it : other.data_) temp2.emplace_back(it);
+    auto a = data_.begin();
+    auto b = other.data_.begin();
 
-    std::vector<Monomial> res(temp1.size() + temp2.size());
-    std::merge(temp1.begin(), temp1.end(), temp2.begin(), temp2.end(),
-        res.begin());
+    while (a != data_.end() && b != other.data_.end()) {
+        if (a->degrees == b->degrees) {
+            double sum = a->coefficient + b->coefficient;
+            if (std::fabs(sum) > 0.000001) {
+                result.data_.EmplaceBack(sum, a->degrees);
+            }
+            ++a;
+            ++b;
+        }
+        else if (a->degrees > b->degrees) {
+            result.data_.EmplaceBack(*a);
+            ++a;
+        }
+        else {
+            result.data_.EmplaceBack(*b);
+            ++b;
+        }
+    }
+    while (a != data_.end()) {
+        result.data_.EmplaceBack(*a);
+        ++a;
+    }
 
-    for (auto& i : res) result.data_.EmplaceBack(i);
-
-    result.Simplify();
+    while (b != other.data_.end()) {
+        result.data_.EmplaceBack(*b);
+        ++b;
+    }
     return result;
 }
 

@@ -25,7 +25,7 @@ class HashTable {
   ValType* Find(const std::string& key);
   void EmplaceBack(const std::string& key, const ValType& value);
   void Erase(const std::string& key);
-  void Print() const;
+  void Print();
   void PrintOperations() const;
   int GetOperationNumber() const;
   void Reset();
@@ -170,10 +170,12 @@ void HashTable<ValType>::Erase(const std::string& key) {
 }
 
 template <typename ValType>
-void HashTable<ValType>::Print() const {
+void HashTable<ValType>::Print() {
   for (std::size_t i = 0; i < size_; ++i) {
+    hash_counters_+=2;
     HashTableNode<ValType>* current = data_[i];
     while (current != nullptr) {
+      hash_counters_ += 2;
       std::cout << i << " " << current->key << " " << current->value << "\n";
       current = current->next;
     }

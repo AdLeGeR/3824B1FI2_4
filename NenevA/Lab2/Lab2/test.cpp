@@ -6,12 +6,27 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <chrono>
+#include <cstdlib>
+#include <ctime>
+//#include <iomanip>
 #include "polinomial.h"
 #include "hash_table.h"
 #include "unordered_table.h"
 #include "avl_tree.h"
 
-// Polinomial craetion
+
+std::string GenerateRandomPolynomial() {
+    std::string poly_str = "";
+    for (int j = 0; j < 3; ++j) {
+        int coeff = rand() % 100 + 1;
+        int degree = rand() % 10;
+        poly_str += std::to_string(coeff) + " " + std::to_string(degree) + " ";
+    }
+    return poly_str;
+} 
+
+// Polinomial creation
 Polinomial CreatePolynomial1() {
     return Polinomial("2 0 3 1 4 2"); 
 }
@@ -404,227 +419,404 @@ TEST(AvlTreePolinomialTest, AssignmentOperator) {
 }
 
 //Experiments
-std::string GenerateRandomPolynomial() {
-    std::string poly_str = "";
-    for (int j = 0; j < 3; ++j) {
-        int coeff = rand() % 100 + 1;
-        int degree = rand() % 10;
-        poly_str += std::to_string(coeff) + " " + std::to_string(degree) + " ";
-    }
-    return poly_str;
-}
+//  HashTable: 100, 1000, 10000 elements
+TEST(HashTableFullTest, 100Elements) {
 
-TEST(HashTablePolinomialExperiment, Insert10000Polynomials) {
-    HashTable<Polinomial> table(10007);
+    HashTable<Polinomial> table(10000);
     srand(time(nullptr));
 
+    auto start_insert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        std::string poly_str = GenerateRandomPolynomial();
+        Polinomial p(poly_str);
+        table.EmplaceBack(key, p);
+    }
+    int Op1 = table.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
+
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        if (table.Find(key) != nullptr) {
+            found++;
+        }
+    }
+    int Op2 = table.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
+
+    auto start_erase = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        table.Erase(key);
+    }
+    int Op3 = table.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
+
+    std::cout << "\nHashTable (100 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms " << Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms" << Op3 << " Operations" << std::endl;
+
+    EXPECT_EQ(found, 100);
+}
+
+TEST(HashTableFullTest, 1000Elements) {
+    HashTable<Polinomial> table(10000);
+    srand(time(nullptr));
+
+    auto start_insert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        std::string poly_str = GenerateRandomPolynomial();
+        Polinomial p(poly_str);
+        table.EmplaceBack(key, p);
+    }
+    int Op1 = table.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
+
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        if (table.Find(key) != nullptr) {
+            found++;
+        }
+    }
+    int Op2 = table.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
+
+    auto start_erase = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        table.Erase(key);
+    }
+    int Op3 = table.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
+
+    std::cout << "\nHashTable (1000 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms "<< Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms" <<Op3 << " Operations" << std::endl;
+
+    EXPECT_EQ(found, 1000);
+}
+
+TEST(HashTableFullTest, 10000Elements) {
+    HashTable<Polinomial> table(10000);
+    srand(time(nullptr));
+
+    auto start_insert = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         std::string poly_str = GenerateRandomPolynomial();
         Polinomial p(poly_str);
         table.EmplaceBack(key, p);
     }
+    int Op1 = table.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
 
-    int found_count = 0;
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         if (table.Find(key) != nullptr) {
-            found_count++;
+            found++;
         }
     }
+    int Op2 = table.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
 
-    EXPECT_EQ(found_count, 10000);
-}
-
-TEST(HashTablePolinomialExperiment, Search10000Polynomials) {
-    HashTable<Polinomial> table(10007);
-    srand(time(nullptr));
-
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        std::string poly_str = GenerateRandomPolynomial();
-        Polinomial p(poly_str);
-        table.EmplaceBack(key, p);
-    }
-
-    int found_count = 0;
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        if (table.Find(key) != nullptr) {
-            found_count++;
-        }
-    }
-
-    EXPECT_EQ(found_count, 10000);
-}
-
-TEST(HashTablePolinomialExperiment, Erase10000Polynomials) {
-    HashTable<Polinomial> table(10007);
-    srand(time(nullptr));
-
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        std::string poly_str = GenerateRandomPolynomial();
-        Polinomial p(poly_str);
-        table.EmplaceBack(key, p);
-    }
-
+    auto start_erase = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         table.Erase(key);
     }
+    int Op3 = table.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
 
-    int found_count = 0;
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        if (table.Find(key) != nullptr) {
-            found_count++;
-        }
-    }
+    std::cout << "\nHashTable (10000 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations " << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms " << Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms " << Op3 << " Operations" << std::endl;
 
-    EXPECT_EQ(found_count, 0);
+    EXPECT_EQ(found, 10000);
 }
 
+// UnorderedTable: 100, 1000, 10000 elements
 
-TEST(UnorderedTablePolinomialExperiment, Insert10000Polynomials) {
+TEST(UnorderedTableFullTest, 100Elements) {
     UnorderedTable<Polinomial> table;
     srand(time(nullptr));
 
+    auto start_insert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        std::string poly_str = GenerateRandomPolynomial();
+        Polinomial p(poly_str);
+        table.EmplaceBack(key, p);
+    }
+    int Op1 = table.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
+
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        if (table.Find(key) != nullptr) {
+            found++;
+        }
+    }
+    int Op2 = table.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
+
+    auto start_erase = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        table.Erase(key);
+    }
+    int Op3 = table.GetOperationNumber() - Op1 - Op2; 
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
+
+    std::cout << "\nUnorderedTable (100 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms "<< Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms "<< Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms " << Op3 << " Operations" << std::endl;
+
+    EXPECT_EQ(found, 100);
+}
+
+TEST(UnorderedTableFullTest, 1000Elements) {
+    UnorderedTable<Polinomial> table;
+    srand(time(nullptr));
+
+    auto start_insert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        std::string poly_str = GenerateRandomPolynomial();
+        Polinomial p(poly_str);
+        table.EmplaceBack(key, p);
+    }
+    int Op1 = table.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
+
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        if (table.Find(key) != nullptr) {
+            found++;
+        }
+    }
+    int Op2 = table.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
+
+    auto start_erase = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        table.Erase(key);
+    }
+    int Op3 = table.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
+
+    std::cout << "\nUnorderedTable (1000 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms " << Op2 <<  " Opearations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms " << Op3 << " Operations" << std::endl;
+
+    EXPECT_EQ(found, 1000);
+}
+
+TEST(UnorderedTableFullTest, 10000Elements) {
+    UnorderedTable<Polinomial> table;
+    srand(time(nullptr));
+
+    auto start_insert = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         std::string poly_str = GenerateRandomPolynomial();
         Polinomial p(poly_str);
         table.EmplaceBack(key, p);
     }
+    int Op1 = table.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
 
-    int found_count = 0;
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         if (table.Find(key) != nullptr) {
-            found_count++;
+            found++;
         }
     }
+    int Op2 = table.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
 
-    EXPECT_EQ(found_count, 10000);
-}
-
-TEST(UnorderedTablePolinomialExperiment, Search10000Polynomials) {
-    UnorderedTable<Polinomial> table;
-    srand(time(nullptr));
-
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        std::string poly_str = GenerateRandomPolynomial();
-        Polinomial p(poly_str);
-        table.EmplaceBack(key, p);
-    }
-
-    int found_count = 0;
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        if (table.Find(key) != nullptr) {
-            found_count++;
-        }
-    }
-
-    EXPECT_EQ(found_count, 10000);
-}
-
-TEST(UnorderedTablePolinomialExperiment, Erase10000Polynomials) {
-    UnorderedTable<Polinomial> table;
-    srand(time(nullptr));
-
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        std::string poly_str = GenerateRandomPolynomial();
-        Polinomial p(poly_str);
-        table.EmplaceBack(key, p);
-    }
-
+    auto start_erase = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         table.Erase(key);
     }
+    int Op3 = table.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
 
-    int found_count = 0;
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        if (table.Find(key) != nullptr) {
-            found_count++;
-        }
-    }
+    std::cout << "\nUnorderedTable (10000 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms " << Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms " << Op3 << " Operations"<< std::endl;
 
-    EXPECT_EQ(found_count, 0);
+    EXPECT_EQ(found, 10000);
 }
 
+// AvlTree: 100, 1000, 10000 elements
 
-TEST(AvlTreePolinomialExperiment, Insert10000Polynomials) {
+TEST(AvlTreeFullTest, 100Elements) {
     AvlTree<Polinomial> tree;
     srand(time(nullptr));
 
+    auto start_insert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        std::string poly_str = GenerateRandomPolynomial();
+        Polinomial p(poly_str);
+        tree.EmplaceBack(key, p);
+    }
+    int Op1 = tree.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
+
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        if (tree.Find(key) != nullptr) {
+            found++;
+        }
+    }
+    int Op2 = tree.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
+
+    auto start_erase = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        tree.Erase(key);
+    }
+    int Op3 = tree.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
+
+    std::cout << "\nAvlTree (100 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms " << Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms " << Op3 << " Operations" << std::endl;
+
+    EXPECT_EQ(found, 100);
+}
+
+TEST(AvlTreeFullTest, 1000Elements) {
+    AvlTree<Polinomial> tree;
+    srand(time(nullptr));
+
+    auto start_insert = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        std::string poly_str = GenerateRandomPolynomial();
+        Polinomial p(poly_str);
+        tree.EmplaceBack(key, p);
+    }
+    int Op1 = tree.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
+
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        if (tree.Find(key) != nullptr) {
+            found++;
+        }
+    }
+    int Op2 = tree.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
+
+    auto start_erase = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 1000; ++i) {
+        std::string key = "poly" + std::to_string(i);
+        tree.Erase(key);
+    }
+    int Op3 = tree.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
+
+    std::cout << "\nAvlTree (1000 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms "<< Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms " << Op3 << " Operations" << std::endl;
+
+    EXPECT_EQ(found, 1000);
+}
+
+TEST(AvlTreeFullTest, 10000Elements) {
+    AvlTree<Polinomial> tree;
+    srand(time(nullptr));
+
+    auto start_insert = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         std::string poly_str = GenerateRandomPolynomial();
         Polinomial p(poly_str);
         tree.EmplaceBack(key, p);
     }
+    int Op1 = tree.GetOperationNumber();
+    auto end_insert = std::chrono::high_resolution_clock::now();
+    auto insert_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_insert - start_insert);
 
-    int found_count = 0;
+    auto start_search = std::chrono::high_resolution_clock::now();
+    int found = 0;
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         if (tree.Find(key) != nullptr) {
-            found_count++;
+            found++;
         }
     }
+    int Op2 = tree.GetOperationNumber() - Op1;
+    auto end_search = std::chrono::high_resolution_clock::now();
+    auto search_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_search - start_search);
 
-    EXPECT_EQ(found_count, 10000);
-}
-
-TEST(AvlTreePolinomialExperiment, Search10000Polynomials) {
-    AvlTree<Polinomial> tree;
-    srand(time(nullptr));
-
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        std::string poly_str = GenerateRandomPolynomial();
-        Polinomial p(poly_str);
-        tree.EmplaceBack(key, p);
-    }
-
-    int found_count = 0;
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        if (tree.Find(key) != nullptr) {
-            found_count++;
-        }
-    }
-
-    EXPECT_EQ(found_count, 10000);
-}
-
-TEST(AvlTreePolinomialExperiment, Erase10000Polynomials) {
-    AvlTree<Polinomial> tree;
-    srand(time(nullptr));
-
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        std::string poly_str = GenerateRandomPolynomial();
-        Polinomial p(poly_str);
-        tree.EmplaceBack(key, p);
-    }
-
+    auto start_erase = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 10000; ++i) {
         std::string key = "poly" + std::to_string(i);
         tree.Erase(key);
     }
+    int Op3 = tree.GetOperationNumber() - Op1 - Op2;
+    auto end_erase = std::chrono::high_resolution_clock::now();
+    auto erase_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_erase - start_erase);
 
-    int found_count = 0;
-    for (int i = 0; i < 10000; ++i) {
-        std::string key = "poly" + std::to_string(i);
-        if (tree.Find(key) != nullptr) {
-            found_count++;
-        }
-    }
+    std::cout << "\nAvlTree (10000 elements):" << std::endl;
+    std::cout << "  Insert: " << insert_time.count() << " ms " << Op1 << " Operations" << std::endl;
+    std::cout << "  Search: " << search_time.count() << " ms " << Op2 << " Operations" << std::endl;
+    std::cout << "  Erase:  " << erase_time.count() << " ms " << Op3 << " Operations" << std::endl;
 
-    EXPECT_EQ(found_count, 0);
+    EXPECT_EQ(found, 10000);
 }

@@ -26,7 +26,7 @@ class AvlTree {
   ValType* Find(const std::string& key);
   void EmplaceBack(const std::string& str, const ValType& val);
   void Erase(const std::string& str);
-  void Print() const;
+  void Print();
   void PrintOperations() const;
   int GetOperationNumber() const;
   void Reset();
@@ -50,7 +50,7 @@ class AvlTree {
   AvlNode<ValType>* PrivateEmplaceBack(AvlNode<ValType>* node, 
                                        const std::string& str, 
                                        const ValType& val);
-  void PrivatePrint(AvlNode<ValType>* node) const;
+  void PrivatePrint(AvlNode<ValType>* node);
   AvlNode<ValType>* FindNode(const std::string& key, AvlNode<ValType>* node);
   void Clear(AvlNode<ValType>* node);
 };
@@ -246,7 +246,8 @@ AvlNode<ValType>* AvlTree<ValType>::PrivateEmplaceBack(AvlNode<ValType>* node,
 }
 
 template <typename ValType>
-void AvlTree<ValType>::PrivatePrint(AvlNode<ValType>* node) const {
+void AvlTree<ValType>::PrivatePrint(AvlNode<ValType>* node) {
+  avl_counters_+=2;
   if (node == nullptr) return;
   PrivatePrint(node->left);
   std::cout << node->key << " " << node->value << "\n";
@@ -298,7 +299,7 @@ void AvlTree<ValType>::Erase(const std::string& str) {
 }
 
 template <typename ValType>
-void AvlTree<ValType>::Print() const {
+void AvlTree<ValType>::Print() {
   PrivatePrint(root_);
 }
 
