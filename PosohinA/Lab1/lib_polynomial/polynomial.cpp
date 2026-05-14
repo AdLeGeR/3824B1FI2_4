@@ -63,10 +63,14 @@ void Polynomial::record() {
 			else
 				break;
 		}
-		i++;
-		if (rat == 0)
+		if (rat == 0) {
+			if (i == 1) {
+				std::cout << "Polynomial cannot be empty" << std::endl;
+				continue;
+			}
 			break;
-
+		}
+		i++;
 		l1 = entering_degree('1');
 		l2 = entering_degree('2');
 		l3 = entering_degree('3');
@@ -127,6 +131,9 @@ Polynomial Polynomial::operator + (const Polynomial& A) const {
 	auto it2 = A.view.begin();
 
 	while (it1 != view.end() && it2 != view.end()){
+		int sum1 = sum_numb((*it1).second);
+		int sum2 = sum_numb((*it2).second);
+
 		if ((*it1).second == (*it2).second) {
 			double sum = (*it1).first + (*it2).first;
 			if (sum != 0.0) {
@@ -137,12 +144,12 @@ Polynomial Polynomial::operator + (const Polynomial& A) const {
 			++it2;
 		}
 
-		else if ((*it1).second > (*it2).second) {
+		else if (sum1 > sum2) {
 			new_Polynomial.view.push_back(*it1);
 			it1++;
 		}
 
-		else if ((*it1).second < (*it2).second) {
+		else if (sum1 <= sum2) {
 			new_Polynomial.view.push_back(*it2);
 			it2++;
 		}
@@ -179,12 +186,14 @@ Polynomial Polynomial::operator * (const Polynomial& A) const {
 	Polynomial new_Polynomial;
 
 	for (auto it1 = view.begin(); it1 != view.end(); it1++) {
-		for (auto it2 = A.view.begin(); it2 != view.end(); it2++) {
+		for (auto it2 = A.view.begin(); it2 != A.view.end(); it2++) {
 
 			if (!chek_deg((*it1).second, (*it2).second))
 				throw std::logic_error("overflou");
 
 			double coef = (*it1).first * (*it2).first;
+			if (coef == 0.0)
+				continue;
 			int deg = (*it1).second + (*it2).second;
 			std::pair<double, int> new_pair = { coef, deg };
 

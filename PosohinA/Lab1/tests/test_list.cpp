@@ -177,3 +177,74 @@ TEST(Test_Ierator, test_0) {
 	List A;
 	ASSERT_NO_THROW(List::Iterator it = A.begin());
 }
+
+TEST(Test_List, test_insert_middle) {
+	List A;
+	A.push_back(std::pair<double, int>(1.0, 1));
+	A.push_back(std::pair<double, int>(3.0, 3));
+
+	auto it = A.begin();
+	Node* first = it.get_current();
+
+	A.insert(first, std::pair<double, int>(2.0, 2));
+
+	it = A.begin();
+	EXPECT_DOUBLE_EQ((*it).first, 1.0);
+	EXPECT_EQ((*it).second, 1);
+	it++;
+	EXPECT_DOUBLE_EQ((*it).first, 2.0);
+	EXPECT_EQ((*it).second, 2);
+	it++;
+	EXPECT_DOUBLE_EQ((*it).first, 3.0);
+	EXPECT_EQ((*it).second, 3);
+}
+
+TEST(Test_List, test_insert_empty_list) {
+	List A;
+	ASSERT_ANY_THROW(A.insert(nullptr, std::pair<double, int>(1.0, 1)));
+}
+
+TEST(Test_List, test_assignment_empty) {
+	List A;
+	A.push_back(std::pair<double, int>(1.0, 1));
+	A.push_back(std::pair<double, int>(2.0, 2));
+
+	List B;
+	A = B; 
+
+	EXPECT_TRUE(A.is_empty());
+}
+
+
+TEST(Test_List, test_assignment_self) {
+	List A;
+	A.push_back(std::pair<double, int>(1.0, 1));
+	A.push_back(std::pair<double, int>(2.0, 2));
+
+	ASSERT_NO_THROW(A = A);
+
+	auto it = A.begin();
+	EXPECT_DOUBLE_EQ((*it).first, 1.0);
+	it++;
+	EXPECT_DOUBLE_EQ((*it).first, 2.0);
+	EXPECT_EQ((*it).second, 2);
+}
+
+
+TEST(Test_List, test_clear_empty) {
+	List A;
+	ASSERT_NO_THROW(A.clear());
+	EXPECT_TRUE(A.is_empty());
+}
+
+
+TEST(Test_List, test_pop_back_all_elements) {
+	List A;
+	A.push_back(std::pair<double, int>(1.0, 1));
+	A.push_back(std::pair<double, int>(2.0, 2));
+
+	A.pop_back();
+	EXPECT_FALSE(A.is_empty());
+	A.pop_back();
+	EXPECT_TRUE(A.is_empty());
+}

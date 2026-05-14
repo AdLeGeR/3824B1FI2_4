@@ -141,3 +141,57 @@ TEST(Test_Polynomial, test_overflou) {
 	Polynomial A1(A), C1(C);
 	ASSERT_ANY_THROW(A1 * C1);
 }
+
+TEST(Test_Polynomial, test_mul_zero_coef) {
+	List A, B, C;
+	A.push_back(std::pair<double, int>{0, 100});
+	A.push_back(std::pair<double, int>{5, 50});
+
+	B.push_back(std::pair<double, int>{3, 20});
+	B.push_back(std::pair<double, int>{0, 10});
+
+
+	C.push_back(std::pair<double, int>{15, 70});  
+
+	Polynomial A1(A), B1(B), C1(C);
+	Polynomial D = A1 * B1;
+	EXPECT_EQ(D, C1);
+}
+
+TEST(Test_Polynomial, test_mul_overflow_x) {
+	List A, B;
+	A.push_back(std::pair<double, int>{1, 900});  
+	B.push_back(std::pair<double, int>{1, 100});  
+
+	Polynomial A1(A), B1(B);
+	ASSERT_ANY_THROW(A1 * B1);
+}
+
+TEST(Test_Polynomial, test_mul_const_zero) {
+	List A, B;
+	A.push_back(std::pair<double, int>{5, 123});
+	A.push_back(std::pair<double, int>{-3, 456});
+
+	Polynomial A1(A);
+	Polynomial D = 0 * A1;
+	Polynomial E;
+	EXPECT_EQ(D, E);
+}
+
+
+TEST(Test_Polynomial, test_combined_operations) {
+	List A, B, C;
+	A.push_back(std::pair<double, int>{2, 100});  
+	B.push_back(std::pair<double, int>{3, 100});  
+	C.push_back(std::pair<double, int>{4, 100});  
+
+	Polynomial A1(A), B1(B), C1(C);
+	Polynomial D = ((A1 + B1) * 2) - C1;
+
+	List G;
+	G.push_back(std::pair<double, int>{6, 100});
+	Polynomial G1(G);
+	EXPECT_EQ(D, G1);
+}
+
+//Пользователь никак не может ввести пустой полином поэтому тестов на операции с ними нет

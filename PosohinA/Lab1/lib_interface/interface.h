@@ -18,6 +18,8 @@ public:
 	Polynomial mul()const;
 	Polynomial sum2()const;
 	Polynomial sub2()const;
+	Polynomial mul_val1()const;
+	Polynomial mul_val2()const;
 };
 
 #endif // !INTERFACE_INTERFASE_H
