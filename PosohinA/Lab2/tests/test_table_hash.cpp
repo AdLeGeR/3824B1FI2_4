@@ -122,3 +122,4 @@ TEST(TableHashTest, EmptyKey1) {
   int *val = table.find("");
   EXPECT_EQ(*val, 200);
 }
+

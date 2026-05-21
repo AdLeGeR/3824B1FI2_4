@@ -5,49 +5,48 @@
 #include <utility>
 
 struct Node {
-  std::pair<double, int> _val;
-  Node *_next;
-  Node(const std::pair<double, int> &, Node *);
+	std::pair<double, int> _val;
+	Node* _next;
+	Node(const std::pair<double, int>&, Node*);
 };
 
-class List {
-  Node *_head, *_tail;
-  size_t count = 0;
 
+class List
+{
+	Node* _head, * _tail;
 public:
-  List();
-  List(const List &);
-  ~List();
+	List();
+	List(const List&);
+	~List();
 
-  bool is_empty();
-  void pop_front();
-  void push_front(const std::pair<double, int> &) noexcept;
-  void pop_back();
-  void push_back(const std::pair<double, int> &) noexcept;
-  void insert(Node *A, const std::pair<double, int> &);
-  void clear() noexcept;
-  List &operator=(const List &);
+	bool is_empty();
+	void pop_front();
+	void push_front(const std::pair<double, int>&) noexcept;
+	void pop_back();
+	void push_back(const std::pair<double, int>&) noexcept;
+	void insert(Node* A, const std::pair<double, int>&);
+	void clear() noexcept;
+	List& operator = (const List&);
 
-  class Iterator {
-    Node *_current;
+	class Iterator {
+		Node* _current;
+	public:
+		Iterator();
+		Iterator(Node* poc);
+		Iterator(const Iterator& A);
 
-  public:
-    Iterator();
-    Iterator(Node *poc);
-    Iterator(const Iterator &A);
+		Iterator& operator =(const Iterator& A);
+		std::pair<double, int>& operator*();
+		bool operator != (const Iterator& A);
+		bool operator == (const Iterator& A);
+		Iterator operator ++(int);
+		Iterator operator ++();
+		Node* get_current();
+	};
 
-    Iterator &operator=(const Iterator &A);
-    std::pair<double, int> &operator*();
-    bool operator!=(const Iterator &A);
-    bool operator==(const Iterator &A);
-    Iterator operator++(int);
-    Iterator operator++();
-    Node *get_current();
-  };
-
-  Iterator begin() const { return Iterator(_head); }
-  Iterator end() const { return Iterator(); }
-  typedef Iterator iterator;
+	Iterator begin() const { return Iterator(_head); }
+	Iterator end() const { return Iterator(); }
+	typedef Iterator iterator;
 };
 
 int sum_numb(int);

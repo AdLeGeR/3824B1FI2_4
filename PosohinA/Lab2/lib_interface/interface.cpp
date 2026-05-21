@@ -26,10 +26,19 @@ void InterfacePol::actions() {
   int a;
   Polynomial rez;
   while (flage) {
-    std::cout << "What to do with polynomials?\n1 - Pol1 + Pol2\n2 - Pol1 - "
-                 "Pol2\n3 - Pol1 * Pol2\n4 - Pol2 + Pol1\n5 - Pol2 - Pol1\n0 - "
-                 "Exit\nEnter the number indicating the action: ";
-    std::cin >> a;
+      while (true) {
+          std::cout << "What to do with polynomials?\n1 - Pol1 + Pol2\n2 - Pol1 - "
+              "Pol2\n3 - Pol1 * Pol2\n4 - Pol2 + Pol1\n5 - Pol2 - Pol1\n0 - "
+              "Exit\nEnter the number indicating the action: ";
+          std::cin >> a;
+          if (std::cin.fail()) {
+              std::cout << "Error: Invalid input!" << std::endl;
+              std::cin.clear();
+              std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+          }
+          else
+              break;
+      }
 
     switch (a) {
     case 1:
@@ -66,11 +75,19 @@ void InterfacePol::actions() {
     }
 
     std::cout << rez << std::endl;
-
-    std::cout << "\ndo you want to continue with the same polynomials?\n1 - "
-                 "yes\n2 - no\n3 - Exit\n";
-    std::cin >> a;
-
+    
+    while (true) {
+        std::cout << "\ndo you want to continue with the same polynomials?\n1 - "
+            "yes\n2 - no\n3 - Exit\n";
+        std::cin >> a;
+        if (std::cin.fail()) {
+            std::cout << "Error: Invalid input!" << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        else
+            break;
+    }
     switch (a) {
     case 1:
       flage = true;
@@ -95,10 +112,19 @@ InterfaseTable::InterfaseTable() : count(0) {
   int a;
   bool flage = true;
   while (flage) {
-    std::cout
-        << "Select the table type\n0 - TableVector\n1 - TableAVL\n2 - TableHash"
-        << std::endl;
-    std::cin >> a;
+      while (true) {
+          std::cout
+              << "Select the table type\n0 - TableVector\n1 - TableAVL\n2 - TableHash"
+              << std::endl;
+          std::cin >> a;
+          if (std::cin.fail()) {
+              std::cout << "Error: Invalid input!" << std::endl;
+              std::cin.clear();
+              std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+          }
+          else
+              break;
+      }
     switch (a) {
     case 0:
       _table = new TableVector<Polynomial>();
@@ -127,14 +153,22 @@ void InterfaseTable::choice() {
   bool running = true;
 
   while (running) {
-    std::cout << "1 - Insert data" << std::endl;
-    std::cout << "2 - Find data" << std::endl;
-    std::cout << "3 - Remove data" << std::endl;
-    std::cout << "4 - Show operations count" << std::endl;
-    std::cout << "5 - Working with polynomials" << std::endl;
-    std::cout << "0 - Exit" << std::endl;
-    std::cin >> option;
-
+      while (true) {
+          std::cout << "1 - Insert data" << std::endl;
+          std::cout << "2 - Find data" << std::endl;
+          std::cout << "3 - Remove data" << std::endl;
+          std::cout << "4 - Show operations count" << std::endl;
+          std::cout << "5 - Working with polynomials" << std::endl;
+          std::cout << "0 - Exit" << std::endl;
+          std::cin >> option;
+          if (std::cin.fail()) {
+              std::cout << "Error: Invalid input!" << std::endl;
+              std::cin.clear();
+              std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+          }
+          else
+              break;
+      }
     switch (option) {
     case 1:
       inputData();
@@ -166,8 +200,17 @@ void InterfaseTable::inputData(const Polynomial &result) {
   bool flage = true;
   int a;
   while (flage) {
-    std::cout << "Do you want to enter your key?\n1 - Yes\n2 - No" << std::endl;
-    std::cin >> a;
+      while (true) {
+          std::cout << "Do you want to enter your key?\n1 - Yes\n2 - No" << std::endl;
+          std::cin >> a;
+          if (std::cin.fail()) {
+              std::cout << "Error: Invalid input!" << std::endl;
+              std::cin.clear();
+              std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+          }
+          else
+              break;
+      }
     switch (a) {
     case 1:
       std::cout << "Enter key: ";
@@ -244,10 +287,20 @@ void InterfaseTable::workingWithPolynomials() {
   int a;
   Polynomial rez;
   while (flage) {
-    std::cout << "What to do with polynomials?\n1 - Pol1 + Pol2\n2 - Pol1 - "
-                 "Pol2\n3 - Pol1 * Pol2\n4 - Pol2 + Pol1\n5 - Pol2 - Pol1\n0 - "
-                 "Exit\nEnter the number indicating the action: ";
-    std::cin >> a;
+
+      while (true) {
+          std::cout << "What to do with polynomials?\n1 - Pol1 + Pol2\n2 - Pol1 - "
+              "Pol2\n3 - Pol1 * Pol2\n4 - Pol2 + Pol1\n5 - Pol2 - Pol1\n0 - "
+              "Exit\nEnter the number indicating the action: ";
+          std::cin >> a;
+          if (std::cin.fail()) {
+              std::cout << "Error: Invalid input!" << std::endl;
+              std::cin.clear();
+              std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+          }
+          else
+              break;
+      }
 
     switch (a) {
     case 1:

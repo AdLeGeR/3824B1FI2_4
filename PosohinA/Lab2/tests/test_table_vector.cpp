@@ -86,3 +86,47 @@ TEST(TableVectorTest, ConstructorWithReserve) {
   EXPECT_NE(table.find("key_0"), nullptr);
   EXPECT_NE(table.find("key_49"), nullptr);
 }
+
+
+TEST(TableVectorTest, UpdateSameKeyMultipleTimes) {
+    TableVector<int> table;
+
+    table.insert("key", 1);
+    table.insert("key", 2);
+    table.insert("key", 3);
+
+    int* val = table.find("key");
+    EXPECT_EQ(*val, 3);
+    EXPECT_NE(val, nullptr);
+}
+
+TEST(TableVectorTest, EmptyStringKey) {
+    TableVector<int> table;
+
+    table.insert("", 1);
+    int* val = table.find("");
+    EXPECT_EQ(*val, 1);
+
+    table.insert("", 2);
+    val = table.find("");
+    EXPECT_EQ(*val, 2);
+
+    table.remove("");
+    val = table.find("");
+    EXPECT_EQ(val, nullptr);
+}
+
+TEST(TableVectorTest, RemoveSameKeyMultipleTimes) {
+    TableVector<int> table;
+
+    table.insert("key", 100);
+    table.remove("key");
+
+    EXPECT_NO_THROW(table.remove("key"));
+    EXPECT_EQ(table.find("key"), nullptr);
+}
+
+TEST(TableVectorTest, RemoveNonExistentFromFilledTable) {
+    TableVector<int> table;
+    EXPECT_NO_THROW(table.remove("nonexistent"));
+}
