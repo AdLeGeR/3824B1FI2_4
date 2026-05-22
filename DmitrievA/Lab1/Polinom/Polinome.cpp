@@ -175,6 +175,7 @@ istream& operator >> (istream& in, Polinom& polinom) {
 		// deg - появился ли символ ^ для текущей переменной
 		// x, y, z - появились ли символы x, y, z для текущего монома
 		//coeff - появился ли коэффициент для текущего монома
+		//frack - появляется ли дробная часть для текущего монома
 		x = y = z = coeff = frac = deg = false;
 		int ix, iy, iz, frac_len, sign = 1;
 		double dcoeff=0;
@@ -187,7 +188,7 @@ istream& operator >> (istream& in, Polinom& polinom) {
 			if (line[i] == ' ') continue;
 			if (line[i] == '+') {
 				polinom.monomes.push_back(Monome(sign* (coeff ? dcoeff+dfrac : 1),ix*100+iy*10+iz));
-				x = y = z = coeff = false;
+				x = y = z = coeff = frac = false;
 				ix = iy = iz = dcoeff = dfrac = frac_len = 0;
 				sign = 1;
 				cur_var = COEFF;
@@ -199,7 +200,7 @@ istream& operator >> (istream& in, Polinom& polinom) {
 			}
 			else if (line[i] == '-') {
 				polinom.monomes.push_back(Monome(sign * (coeff ? dcoeff + dfrac : 1), ix * 100 + iy * 10 + iz));
-				x = y = z = coeff = false;
+				x = y = z = coeff = frac= false;
 				ix = iy = iz = dcoeff = dfrac = frac_len = 0;
 				sign = -1;
 				cur_var = COEFF;
