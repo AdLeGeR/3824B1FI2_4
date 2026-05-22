@@ -1,0 +1,92 @@
+ Session started 
+HashTable: emplace(first, 2x y^2 + x) [operations: 21]
+UnorderedTable: emplace(first, 2x y^2 + x) [operations: 1]
+AvlTree: emplace(first, 2x y^2 + x) [operations: 3]
+HashTable: emplace(second, 7x y z + 4x) [operations: 25]
+UnorderedTable: emplace(second, 7x y z + 4x) [operations: 2]
+AvlTree: emplace(second, 7x y z + 4x) [operations: 21]
+HashTable: emplace(third, 5x y^3 z^4 + 4x z) [operations: 21]
+UnorderedTable: emplace(third, 5x y^3 z^4 + 4x z) [operations: 3]
+AvlTree: emplace(third, 5x y^3 z^4 + 4x z) [operations: 53]
+HashTable: print() [operations: 26]
+UnorderedTable: print() [operations: 3]
+AvlTree: print() [operations: 14]
+HashTable: emplace(fifth, 2x y^2 + 7x y z + 5x) [operations: 21]
+UnorderedTable: emplace(fifth, 2x y^2 + 7x y z + 5x) [operations: 4]
+AvlTree: emplace(fifth, 2x y^2 + 7x y z + 5x) [operations: 39]
+HashTable: emplace(sixth, 14x^2 y^3 z + 8x^2 y^2 + 7x^2 y z + 4x^2) [operations: 21]
+UnorderedTable: emplace(sixth, 14x^2 y^3 z + 8x^2 y^2 + 7x^2 y z + 4x^2) [operations: 5]
+AvlTree: emplace(sixth, 14x^2 y^3 z + 8x^2 y^2 + 7x^2 y z + 4x^2) [operations: 39]
+HashTable: erase(second) [operations: 26]
+UnorderedTable: erase(second) [operations: 5]
+AvlTree: erase(second) [operations: 45]
+HashTable: find(sixth) = 14x^2 y^3 z + 8x^2 y^2 + 7x^2 y z + 4x^2 [operations: 20]
+UnorderedTable: find(sixth) = 14x^2 y^3 z + 8x^2 y^2 + 7x^2 y z + 4x^2 [operations: 3]
+AvlTree: find(sixth) = 14x^2 y^3 z + 8x^2 y^2 + 7x^2 y z + 4x^2 [operations: 7]
+ Statistics 
+HashTable: total=271
+UnorderedTable: total=36
+AvlTree: total=253
+ Final Statistics 
+HashTable:
+  emplace: 5 times
+  erase: 1 times
+  find: 1 times
+  print: 1 times
+  Total operations: 271
+UnorderedTable:
+  emplace: 5 times
+  erase: 1 times
+  find: 1 times
+  print: 1 times
+  Total operations: 36
+AvlTree:
+  emplace: 5 times
+  erase: 1 times
+  find: 1 times
+  print: 1 times
+  Total operations: 253
+ Session ended 
+ Session started 
+HashTable: emplace(first, x^2 + 3x y z + x) [operations: 21]
+UnorderedTable: emplace(first, x^2 + 3x y z + x) [operations: 1]
+AvlTree: emplace(first, x^2 + 3x y z + x) [operations: 3]
+HashTable: emplace(second, 10x^2 z^2 + 7x y z + 3x) [operations: 24]
+UnorderedTable: emplace(second, 10x^2 z^2 + 7x y z + 3x) [operations: 2]
+AvlTree: emplace(second, 10x^2 z^2 + 7x y z + 3x) [operations: 21]
+HashTable: emplace(third, 10x^2 z^2 + x^2 + 10x y z + 4x) [operations: 21]
+UnorderedTable: emplace(third, 10x^2 z^2 + x^2 + 10x y z + 4x) [operations: 3]
+AvlTree: emplace(third, 10x^2 z^2 + x^2 + 10x y z + 4x) [operations: 53]
+HashTable: find(second) = 10x^2 z^2 + 7x y z + 3x [operations: 23]
+UnorderedTable: find(second) = 10x^2 z^2 + 7x y z + 3x [operations: 3]
+AvlTree: find(second) = 10x^2 z^2 + 7x y z + 3x [operations: 7]
+HashTable: erase(second) [operations: 26]
+UnorderedTable: erase(second) [operations: 5]
+AvlTree: erase(second) [operations: 27]
+HashTable: print() [operations: 206]
+UnorderedTable: print() [operations: 2]
+AvlTree: print() [operations: 10]
+ Statistics 
+HashTable: total=364
+UnorderedTable: total=21
+AvlTree: total=138
+ Final Statistics 
+HashTable:
+  emplace: 3 times
+  erase: 1 times
+  find: 1 times
+  print: 1 times
+  Total operations: 364
+UnorderedTable:
+  emplace: 3 times
+  erase: 1 times
+  find: 1 times
+  print: 1 times
+  Total operations: 21
+AvlTree:
+  emplace: 3 times
+  erase: 1 times
+  find: 1 times
+  print: 1 times
+  Total operations: 138
+ Session ended 

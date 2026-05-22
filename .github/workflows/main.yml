@@ -42,6 +42,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
+      - name: Fetch base branch to get base commit
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.sha }} --no-tags
+
       - name: Set skip flag
         id: skip
         run: |
@@ -51,11 +55,18 @@ jobs:
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Debug git
+        run: |
+          echo "Base SHA: ${{ github.event.pull_request.base.sha }}"
+          git cat-file -t ${{ github.event.pull_request.base.sha }} || echo "Base commit not found!"
+          git log --oneline -5
+
       - name: Get changed files
         id: changed-files
         if: steps.skip.outputs.skip == 'false'
         uses: tj-actions/changed-files@v44
         with:
+          skip_initial_fetch: true
           files: |
             **/*.cpp
             **/*.h
@@ -64,6 +75,7 @@ jobs:
             **/*.cc
             **/*.cxx
           separator: ","
+          base_sha: "a1304917905e7552a8adbb9e6542bd972c25000d"
 
       - name: Install tools
         if: steps.skip.outputs.skip == 'false' && steps.changed-files.outputs.any_changed == 'true'

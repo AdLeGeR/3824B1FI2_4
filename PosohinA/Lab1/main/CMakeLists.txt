@@ -1,0 +1,3 @@
+create_executable_project(Application)
+
+target_link_libraries(Application PUBLIC Interface)

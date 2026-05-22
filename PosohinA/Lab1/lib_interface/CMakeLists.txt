@@ -1,0 +1,2 @@
+create_project_lib(Interface)
+target_link_libraries(Interface PUBLIC Polynomial)
