@@ -21,7 +21,7 @@ template <class T> TableVector<T>::TableVector(size_t size) : _countOper(0) {
     _data.reserve(size);
 }
 
-template <class T> TableVector<T>::~TableVector() {}
+template <class T> TableVector<T>::~TableVector() { _data.clear(); }
 
 template <class T>
 void TableVector<T>::insert(const std::string& key, const T& val) {
