@@ -1,4 +1,5 @@
-﻿#include <algorithm>
+﻿"Copyright 2026 Alexey Dmitriev"
+#include <algorithm>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -10,19 +11,24 @@
 #include "../Lab2/Polinom.h"
 #include "../Lab2/UnorderedTable.h"
 
-using namespace std;
+    using std::mt19937;
+using std::uniform_int_distribution;
+using std::uniform_real_distribution;
 
 struct BenchResult {
-  unsigned long long totalOps = 0;
+  int64_t totalOps = 0;
   double durationMs = 0;
 };
 
 string generateRandomKey(size_t length) {
-  static const char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  static const char alphabet[] =
+      "abcdefg\
+  hijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   static mt19937 gen(42);
   uniform_int_distribution<> dis(0, sizeof(alphabet) - 2);
   string s;
-  for (size_t i = 0; i < length; ++i) s += alphabet[dis(gen)];
+  for (size_t i = 0; i < length; ++i)
+    s += alphabet[dis(gen)];
   return s;
 }
 
@@ -33,7 +39,8 @@ Polinom generateRandomPolinom() {
 }
 
 template <typename TTable>
-void runExperiment(const string& tableName, const vector<string>& keys,
+void runExperiment(const string& tableName,
+                   const vector<string>& keys,
                    const vector<Polinom>& values) {
   TTable table;
   size_t n = keys.size();
@@ -63,12 +70,13 @@ void runExperiment(const string& tableName, const vector<string>& keys,
   end = chrono::high_resolution_clock::now();
   removeRes.durationMs = chrono::duration<double, milli>(end - start).count();
 
-  cout << left << setw(20) << tableName << " | Insert: " << setw(10) << insertRes.totalOps
-       << " ops / " << setw(8) << fixed << setprecision(2) << insertRes.durationMs << " ms"
-       << " | Find: " << setw(10) << findRes.totalOps << " ops / " << setw(8) << findRes.durationMs
-       << " ms"
-       << " | Remove: " << setw(10) << removeRes.totalOps << " ops / " << setw(8)
-       << removeRes.durationMs << " ms" << endl;
+  cout << left << setw(20) << tableName << " | Insert: " << setw(10)
+       << insertRes.totalOps << " ops / " << setw(8) << fixed << setprecision(2)
+       << insertRes.durationMs << " ms"
+       << " | Find: " << setw(10) << findRes.totalOps << " ops / " << setw(8)
+       << findRes.durationMs << " ms"
+       << " | Remove: " << setw(10) << removeRes.totalOps << " ops / "
+       << setw(8) << removeRes.durationMs << " ms" << endl;
 }
 
 int main() {

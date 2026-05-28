@@ -1,12 +1,15 @@
-﻿#include <random>
+﻿"Copyright 2026 Alexey Dmitriev"
+
+#include <random>
 #include <vector>
 
 #include "../Polinom/Polinome.cpp"
 #include "pch.h"
 
-using std::vector;
+    using std::vector;
 
-// -------------------------- LIST TESTS -----------------------------------------------
+// -------------------------- LIST TESTS
+// -----------------------------------------------
 
 TEST(ListTest, PushBack_And_Iterator) {
   vector<int> v;
@@ -167,7 +170,8 @@ TEST(MonomeTest, MoreLessEqual) {
 
   Monome n5(1, 120);
   Monome n6(1, 210);
-  EXPECT_TRUE(n6 > n5);  // если одинаковые степени, порядок лексический (X > Y > Z)
+  EXPECT_TRUE(n6 >
+              n5);  // если одинаковые степени, порядок лексический (X > Y > Z)
 }
 
 TEST(MonomeTest, RandomEqual) {
@@ -235,7 +239,9 @@ TEST(MonomeTest, RandomMultiplicationMonome) {
     double c2 = coeff(gen);
     Monome m1(c1, pow11 * 100 + pow12 * 10 + pow13);
     Monome m2(c2, pow21 * 100 + pow22 * 10 + pow23);
-    Monome m3(c1 * c2, pow11 * 100 + pow12 * 10 + pow13 + pow21 * 100 + pow22 * 10 + pow23);
+    Monome m3(
+        c1 * c2,
+        pow11 * 100 + pow12 * 10 + pow13 + pow21 * 100 + pow22 * 10 + pow23);
     EXPECT_EQ(m1 * m2, m3);
   }
 }
@@ -250,9 +256,11 @@ TEST(MonomeTest, InvalidDegree) {
   EXPECT_THROW(Monome(1, 1000), const char*);
 }
 
-// ------------------------- Polinom TESTS --------------------------------------
+// ------------------------- Polinom TESTS
+// --------------------------------------
 
-// Вспомогательная локальная функция для безопасного временного перенаправления std::cin
+// Вспомогательная локальная функция для безопасного временного перенаправления
+// std::cin
 static void readPolinomFromString(Polinom& p, const std::string& s) {
   std::istringstream iss(s);
   std::streambuf* old = std::cin.rdbuf(iss.rdbuf());
@@ -270,7 +278,8 @@ TEST(PolinomTest, ConstructorAndScalarMultiply) {
   Polinom r = p * 2.0;
   std::ostringstream oss;
   oss << r;
-  // должен вывести коэффициент 10 (степень 0, печатается просто число) + пробел и +
+  // должен вывести коэффициент 10 (степень 0, печатается просто число) + пробел
+  // и +
   EXPECT_EQ(oss.str(), std::string("10 + "));
 }
 
@@ -283,7 +292,8 @@ TEST(PolinomTest, AdditionSimpleInput) {
   Polinom s = a + b;
   std::ostringstream oss;
   oss << s;
-  // ожидаем суммирование коэффициентов степеней 200: 3+1=4, степени 100: 4+(-4)=0 -> исчезает
+  // ожидаем суммирование коэффициентов степеней 200: 3+1=4, степени 100:
+  // 4+(-4)=0 -> исчезает
   EXPECT_EQ(oss.str(), std::string("4x^2 + "));
 }
 

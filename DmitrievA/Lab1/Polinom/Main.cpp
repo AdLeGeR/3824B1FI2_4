@@ -1,21 +1,22 @@
-﻿// Polinom.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение
-// программы.
-//
+﻿"Copyright 2026 Alexey Dmitriev"
 
 #include <iostream>
 
 #include "Polinom.h"
 
-using std::cout;
+    using std::cout;
 using std::endl;
 
 int main() {
   cout << "Choose input format of polinome:" << endl;
-  cout << "1. First number N - count of monomes.Next N pairs of numbers - monomes.First number at "
-          "pair - coefficient.Second - degree(must be between 0 and 999).Example:"
+  cout << "1. First number N - count of monomes.Next N pairs of numbers - "
+          "monomes.First number at "
+          "pair - coefficient.Second - degree(must be between 0 and "
+          "999).Example:"
        << endl;
   cout << "3\n2 111\n3 123\n10 0\n";
-  cout << "2. Human readable format. Example: x^2y^3z^4 + 2*xy4z - 5x - 10x2y3z4 + 1\n";
+  cout << "2. Human readable format. Example: x^2y^3z^4 + 2*xy4z - 5x - "
+          "10x2y3z4 + 1\n";
   int mode;
   cin >> mode;
   while (mode != 1 && mode != 2) {
@@ -128,10 +129,11 @@ int main() {
 // Советы по началу работы
 //   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
 //   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
+//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и
+//   другие сообщения.
 //   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать
-//   файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект
-//   существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и
-//   выберите SLN-файл.
+//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый
+//   элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий
+//   элемент", чтобы добавить в проект существующие файлы кода.
+//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" >
+//   "Открыть" > "Проект" и выберите SLN-файл.

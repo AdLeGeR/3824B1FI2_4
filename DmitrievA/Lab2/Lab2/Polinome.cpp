@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿"Copyright 2026 Alexey Dmitriev"
+
 #include <functional>
 #include <iostream>
 #include <limits>
@@ -7,7 +8,7 @@
 #include "List.h"
 #include "Polinom.h"
 
-using std::cin;
+    using std::cin;
 using std::cout;
 using std::endl;
 using std::greater;
@@ -21,7 +22,9 @@ Polinom::Polinom() {}
 
 Polinom::Polinom(const Polinom& other) {
   this->parseMode = other.parseMode;
-  for (List<Monome>::const_iterator it = other.monomes.cbegin(); it != other.monomes.cend(); ++it) {
+  for (List<Monome>::const_iterator it = other.monomes.cbegin();
+       it != other.monomes.cend();
+       ++it) {
     this->monomes.push_back(*it);
   }
 }
@@ -50,7 +53,8 @@ void Polinom::normalize() {
 }
 Polinom Polinom::operator+(const Polinom& other) const {
   Polinom result = Polinom();
-  List<Monome>::const_iterator it = monomes.cbegin(), it2 = other.monomes.cbegin();
+  List<Monome>::const_iterator it = monomes.cbegin(),
+                               it2 = other.monomes.cbegin();
   for (; it != monomes.cend() && it2 != other.monomes.cend();) {
     if (it->degree == it2->degree) {
       double coeff = it->coeff + it2->coeff;
@@ -66,14 +70,17 @@ Polinom Polinom::operator+(const Polinom& other) const {
       it++;
     }
   }
-  for (; it != monomes.cend(); it++) result.monomes.push_back(*it);
-  for (; it2 != monomes.cend(); it2++) result.monomes.push_back(*it2);
+  for (; it != monomes.cend(); it++)
+    result.monomes.push_back(*it);
+  for (; it2 != monomes.cend(); it2++)
+    result.monomes.push_back(*it2);
   return result;
 }
 
 Polinom Polinom::operator-(const Polinom& other) const {
   Polinom result = Polinom();
-  List<Monome>::const_iterator it = monomes.cbegin(), it2 = other.monomes.cbegin();
+  List<Monome>::const_iterator it = monomes.cbegin(),
+                               it2 = other.monomes.cbegin();
   for (; it != monomes.cend() && it2 != other.monomes.cend();) {
     if (it->degree == it2->degree) {
       double coeff = it->coeff - it2->coeff;
@@ -89,8 +96,10 @@ Polinom Polinom::operator-(const Polinom& other) const {
       it++;
     }
   }
-  for (; it != monomes.cend(); it++) result.monomes.push_back(*it);
-  for (; it2 != monomes.cend(); it2++) result.monomes.push_back(-(*it2));
+  for (; it != monomes.cend(); it++)
+    result.monomes.push_back(*it);
+  for (; it2 != monomes.cend(); it2++)
+    result.monomes.push_back(-(*it2));
   return result;
 }
 
@@ -123,7 +132,9 @@ Polinom& Polinom::operator=(const Polinom& other) {
   }
 
   // копирование из other
-  for (List<Monome>::const_iterator it = other.monomes.cbegin(); it != other.monomes.cend(); ++it) {
+  for (List<Monome>::const_iterator it = other.monomes.cbegin();
+       it != other.monomes.cend();
+       ++it) {
     monomes.push_back(*it);
   }
 
@@ -185,21 +196,21 @@ istream& operator>>(istream& in, Polinom& polinom) {
       if (line[i] == ' ')
         continue;
       if (line[i] == '+') {
-        polinom.monomes.push_back(
-            Monome(sign * (coeff ? dcoeff + dfrac : 1), ix * 100 + iy * 10 + iz));
+        polinom.monomes.push_back(Monome(sign * (coeff ? dcoeff + dfrac : 1),
+                                         ix * 100 + iy * 10 + iz));
         x = y = z = coeff = frac = false;
         ix = iy = iz = dcoeff = dfrac = frac_len = 0;
         sign = 1;
         cur_var = COEFF;
         continue;
       }
-      if (line[i] == '-' && (x == y) && (y == z) && (z == coeff) && (coeff == frac) &&
-          (frac == false)) {
+      if (line[i] == '-' && (x == y) && (y == z) && (z == coeff) &&
+          (coeff == frac) && (frac == false)) {
         sign = -1;
         continue;
       } else if (line[i] == '-') {
-        polinom.monomes.push_back(
-            Monome(sign * (coeff ? dcoeff + dfrac : 1), ix * 100 + iy * 10 + iz));
+        polinom.monomes.push_back(Monome(sign * (coeff ? dcoeff + dfrac : 1),
+                                         ix * 100 + iy * 10 + iz));
         x = y = z = coeff = frac = false;
         ix = iy = iz = dcoeff = dfrac = frac_len = 0;
         sign = -1;
@@ -237,7 +248,8 @@ istream& operator>>(istream& in, Polinom& polinom) {
 
       } else if (line[i] == '.') {
         if (cur_var != COEFF) {
-          throw "Fractional part can only be in coefficient at position " + to_string(i);
+          throw "Fractional part can only be in coefficient at position " +
+              to_string(i);
           return in;
         }
         cur_var = FRAC;
@@ -271,7 +283,8 @@ istream& operator>>(istream& in, Polinom& polinom) {
         return in;
       }
     }
-    polinom.monomes.push_back(Monome(sign * (coeff ? dcoeff + dfrac : 1), ix * 100 + iy * 10 + iz));
+    polinom.monomes.push_back(
+        Monome(sign * (coeff ? dcoeff + dfrac : 1), ix * 100 + iy * 10 + iz));
     polinom.monomes.sort(greater<Monome>{});
     polinom.normalize();
   }
