@@ -1,12 +1,14 @@
-﻿#pragma once
+﻿"Copyright 2026 Alexey Dmitriev"
+
+#pragma once
 #include <iostream>
 
-using std::ostream;
+    using std::ostream;
 
 class Counter {
   unsigned count;
 
- public:
+public:
   Counter() : count{0} {}
   unsigned operator++(int c) {
     return ++count;

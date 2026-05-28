@@ -1,14 +1,18 @@
-﻿#pragma once
+﻿"Copyright 2026 Alexey Dmitriev"
+#include <algorithm>
+#include <functional>
 
-template <typename T>
-class List;
+#pragma once
+
+    template <typename T>
+    class List;
 
 template <typename T>
 struct Node {
   T data;
   Node* next;
   Node* prev;
-  Node(T data) {
+  explicit Node(T data) {
     this->data = data;
     this->next = nullptr;
     this->prev = nullptr;
@@ -20,9 +24,9 @@ class Iterator {
   friend List<T>;
   Node<T>* current = nullptr;
 
- public:
+public:
   Iterator() {}
-  Iterator(Node<T>* node) {
+  explicit Iterator(Node<T>* node) {
     current = node;
   }
   Ref operator*() {
@@ -55,7 +59,7 @@ class List {
   Node<T>* last = nullptr;
   size_t size = 0;
 
- public:
+public:
   typedef Iterator<T> iterator;
   typedef Iterator<T, const T*, const T&> const_iterator;
   List() {}
@@ -140,7 +144,7 @@ class List {
     if (size == 1) {
       delete first;
       return;
-    };
+    }
     for (Node<T>* n = first; n != last;) {
       Node<T>* temp = n->next;
       delete n;
@@ -149,13 +153,14 @@ class List {
     delete last;
   }
 
- private:
+private:
   template <typename Compare>
   iterator sort_(iterator iter, size_t len, Compare comp) {
     if (len <= 1)
       return iter;
     iterator middle_it = iter;
-    for (size_t i = 0; i < len / 2; i++) middle_it++;
+    for (size_t i = 0; i < len / 2; i++)
+      middle_it++;
     iter = sort_(iter, len / 2, comp);
     middle_it = sort_(middle_it, len - (len / 2), comp);
     size_t m_ind = 0;

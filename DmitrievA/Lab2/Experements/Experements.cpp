@@ -22,8 +22,8 @@ struct BenchResult {
 
 string generateRandomKey(size_t length) {
   static const char alphabet[] =
-      "abcdefg\
-  hijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      "abcdefg"
+      "hijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   static mt19937 gen(42);
   uniform_int_distribution<> dis(0, sizeof(alphabet) - 2);
   string s;

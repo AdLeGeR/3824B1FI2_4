@@ -1,8 +1,10 @@
 ﻿"Copyright 2026 Alexey Dmitriev"
 
 #include <iostream>
+#include <string>
 
 #include "Polinom.h"
+
 
     using std::cout;
 using std::endl;

@@ -1,10 +1,14 @@
 ﻿"Copyright 2026 Alexey Dmitriev"
 
+#include <algorithm>
+#include <iostream>
 #include <random>
+#include <string>
 #include <vector>
 
-#include "../Polinom/Polinome.cpp"
+#include "../Polinom/Polinome.h"
 #include "pch.h"
+
 
     using std::vector;
 

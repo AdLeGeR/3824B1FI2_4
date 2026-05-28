@@ -217,8 +217,9 @@ istream& operator>>(istream& in, Polinom& polinom) {
         cur_var = COEFF;
         continue;
 
-      } else if (line[i] == '*')
+      } else if (line[i] == '*') {
         continue;
+      }
       if (line[i] == '^') {
         if (deg) {
           throw "Double ^ at position " + to_string(i);

@@ -1,10 +1,11 @@
-﻿#pragma once
+﻿"Copyright 2026 Alexey Dmitriev"
+#pragma once
 #include <string>
 #include <vector>
 
 #include "Counter.h"
 
-using std::string;
+    using std::string;
 using std::vector;
 
 template <typename T>
@@ -17,7 +18,7 @@ class UnorderedTable {
   vector<record> table;
   Counter counter;
 
- public:
+public:
   UnorderedTable() : size(0) {}
 
   void insert(const string& key, const T& data) {

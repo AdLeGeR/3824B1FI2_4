@@ -1,11 +1,15 @@
-﻿#include "../Lab2/OrderedTable.h"
+﻿"Copyright 2026 Alexey Dmitriev"
+#include <string>
+
+#include "../Lab2/OrderedTable.h"
 #include "../Lab2/Polinom.h"
 #include "../Lab2/UnorderedTable.h"
 #include "pch.h"
 
-// Фикстура для тестов (общая настройка для разных типов таблиц)
-class TableTest : public ::testing::Test {
- protected:
+
+    // Фикстура для тестов (общая настройка для разных типов таблиц)
+    class TableTest : public ::testing::Test {
+protected:
   Polinom p1, p2, p3;
 
   void SetUp() override {
