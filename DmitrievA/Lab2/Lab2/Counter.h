@@ -7,7 +7,7 @@ class Counter {
 	unsigned count;
 public:
 	Counter() : count{ 0 } {}
-	unsigned operator++() {
+	unsigned operator++(int c) {
 		return ++count;
 	}
 	void reset() {
@@ -18,6 +18,10 @@ public:
 	}
 	Counter& operator += (unsigned c) {
 		count += c;
+		return *this;
+	}
+	Counter& operator = (unsigned c) {
+		count = c;
 		return *this;
 	}
 	unsigned getCount() const {

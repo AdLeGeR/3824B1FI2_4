@@ -15,28 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Lab2.cpp">
+    <ClCompile Include="Experements.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Polinome.cpp">
+    <ClCompile Include="..\Lab2\Polinome.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OrderedTable.h">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="..\Lab2\List.h">
+      <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Counter.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="List.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Polinom.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="UnorderedTable.h">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="..\Lab2\Polinom.h">
+      <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <vector>
 #include "Counter.h"
@@ -60,7 +60,7 @@ public:
 		}
 	}
 	
-	unsigned getCounter() {
+	unsigned getCount() {
 		return counter.getCount();
 	}
 	

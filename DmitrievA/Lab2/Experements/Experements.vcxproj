@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f143394f-595f-4500-82aa-c9802c3feea8}</ProjectGuid>
-    <RootNamespace>Lab2</RootNamespace>
+    <ProjectGuid>{8fbbb9ff-4595-48e8-8552-be507a5a8dbd}</ProjectGuid>
+    <RootNamespace>Experements</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -123,15 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Lab2.cpp" />
-    <ClCompile Include="Polinome.cpp" />
+    <ClCompile Include="..\Lab2\Polinome.cpp" />
+    <ClCompile Include="Experements.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="List.h" />
-    <ClInclude Include="Counter.h" />
-    <ClInclude Include="OrderedTable.h" />
-    <ClInclude Include="Polinom.h" />
-    <ClInclude Include="UnorderedTable.h" />
+    <ClInclude Include="..\Lab2\List.h" />
+    <ClInclude Include="..\Lab2\Polinom.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
