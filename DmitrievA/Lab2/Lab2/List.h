@@ -24,7 +24,7 @@ class Iterator {
   friend List<T>;
   Node<T>* current = nullptr;
 
-public:
+ public:
   Iterator() {}
   explicit Iterator(Node<T>* node) {
     current = node;
@@ -59,7 +59,7 @@ class List {
   Node<T>* last = nullptr;
   size_t size = 0;
 
-public:
+ public:
   typedef Iterator<T> iterator;
   typedef Iterator<T, const T*, const T&> const_iterator;
   List() {}
@@ -153,7 +153,7 @@ public:
     delete last;
   }
 
-private:
+ private:
   template <typename Compare>
   iterator sort_(iterator iter, size_t len, Compare comp) {
     if (len <= 1)

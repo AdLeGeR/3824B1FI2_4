@@ -20,7 +20,7 @@ class Polinom {
   List<Monome> monomes = List<Monome>();
   void normalize();
 
-public:
+ public:
   ParseMode parseMode = Simple;
   Polinom();
   Polinom(const Polinom& other);
@@ -58,7 +58,7 @@ class Monome {
   friend class Polinom;
   int degree_sum() const;
 
-public:
+ public:
   bool operator>(const Monome& other) const;
   bool operator<(const Monome& other) const;
   Monome();

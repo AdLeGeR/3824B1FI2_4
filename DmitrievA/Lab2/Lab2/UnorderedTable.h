@@ -18,7 +18,7 @@ class UnorderedTable {
   vector<record> table;
   Counter counter;
 
-public:
+ public:
   UnorderedTable() : size(0) {}
 
   void insert(const string& key, const T& data) {

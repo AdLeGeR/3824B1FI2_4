@@ -39,8 +39,7 @@ Polinom generateRandomPolinom() {
 }
 
 template <typename TTable>
-void runExperiment(const string& tableName,
-                   const vector<string>& keys,
+void runExperiment(const string& tableName, const vector<string>& keys,
                    const vector<Polinom>& values) {
   TTable table;
   size_t n = keys.size();

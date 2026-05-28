@@ -19,10 +19,12 @@ class AVLOrderedTable {
     Node* left;
     Node* right;
     int height;
-    Node(string k, T v) : key(k), value(v), left(nullptr), right(nullptr), height(1) {}
+    Node(string k, T v)
+        : key(k), value(v), left(nullptr), right(nullptr), height(1) {}
   };
   typedef struct Node Node;
-  Node* root;  // Ensure the root member is declared in the private section of the class
+  Node* root;  // Ensure the root member is declared in the private section of
+               // the class
 
  private:
   int height(Node* node) {
@@ -248,7 +250,7 @@ class AVLOrderedTable {
 template <typename T>
 class HashOrderedTable {
  public:
-  HashOrderedTable(size_t capacity = 16) {
+  explicit HashOrderedTable(size_t capacity = 16) {
     this->capacity = capacity;
     table.resize(capacity, nullptr);
   }

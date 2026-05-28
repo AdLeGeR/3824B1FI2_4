@@ -1,10 +1,11 @@
-﻿#pragma once
+﻿"Copyright 2026 Alexey Dmitriev"
+#pragma once
 #include <iostream>
 #include <string>
 
 #include "List.h"
 
-using std::cin;
+    using std::cin;
 using std::cout;
 using std::endl;
 using std::istream;
@@ -19,19 +20,17 @@ class Polinom {
   List<Monome> monomes = List<Monome>();
   void normalize();
 
- public:
+public:
   ParseMode parseMode = Simple;
   Polinom();
   Polinom(const Polinom& other);
-  Polinom(double num);
+  explicit Polinom(double num);
   Polinom operator+(const Polinom& other) const;
   Polinom operator-(const Polinom& other) const;
   /*void addMonome(const Monome& monome) {
-    for( List<Monome>::iterator it = monomes.begin(); it != monomes.end(); it++) {
-      if (it->degree == monome.degree) {
-        int coeff = it->coeff + monome.coeff;
-        if (coeff != 0) {
-          *it = Monome(coeff, it->degree);
+    for( List<Monome>::iterator it = monomes.begin(); it != monomes.end(); it++)
+  { if (it->degree == monome.degree) { int coeff = it->coeff + monome.coeff; if
+  (coeff != 0) { *it = Monome(coeff, it->degree);
         }
         else {
           monomes.erase(it);
@@ -59,7 +58,7 @@ class Monome {
   friend class Polinom;
   int degree_sum() const;
 
- public:
+public:
   bool operator>(const Monome& other) const;
   bool operator<(const Monome& other) const;
   Monome();
